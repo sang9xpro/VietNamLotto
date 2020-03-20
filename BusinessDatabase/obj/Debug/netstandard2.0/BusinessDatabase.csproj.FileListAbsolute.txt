@@ -1,0 +1,5 @@
+C:\Users\Admin\source\repos\VietNamLotto\BusinessDatabase\bin\Debug\netstandard2.0\BusinessDatabase.deps.json
+C:\Users\Admin\source\repos\VietNamLotto\BusinessDatabase\bin\Debug\netstandard2.0\BusinessDatabase.dll
+C:\Users\Admin\source\repos\VietNamLotto\BusinessDatabase\obj\Debug\netstandard2.0\BusinessDatabase.csprojAssemblyReference.cache
+C:\Users\Admin\source\repos\VietNamLotto\BusinessDatabase\obj\Debug\netstandard2.0\BusinessDatabase.AssemblyInfoInputs.cache
+C:\Users\Admin\source\repos\VietNamLotto\BusinessDatabase\obj\Debug\netstandard2.0\BusinessDatabase.AssemblyInfo.cs
