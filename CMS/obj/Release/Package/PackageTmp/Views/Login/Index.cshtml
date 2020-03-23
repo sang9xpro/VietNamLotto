@@ -1,0 +1,109 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "Login to Woori Card Report System ";
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+
+<div id="content" class="container">
+
+    <div class="row">
+
+        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
+            <div class="well no-padding">
+                <form action="" id="login-form" class="smart-form client-form">
+                    <header>
+                        Sign In
+                    </header>
+
+                    <fieldset>
+
+                        <section>
+                            <label class="label">Username</label>
+                            <label class="input">
+                                <i class="icon-append fa fa-user"></i>
+                                <input type="text" name="username" id="email">
+                                <b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i> Please enter username</b>
+                            </label>
+                        </section>
+
+                        <section>
+                            <label class="label">Password</label>
+                            <label class="input">
+                                <i class="icon-append fa fa-lock"></i>
+                                <input type="password" name="password" id="password">
+                                <b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> Enter your password</b>
+                            </label>
+                            <div class="note">
+                                <a href="forgotpassword.html">Forgot password?</a>
+                            </div>
+                        </section>
+
+                        <section>
+                            <label class="checkbox">
+                                <input type="checkbox" name="remember" checked="">
+                                <i></i>Stay signed in
+                            </label>
+                        </section>
+                    </fieldset>
+                    <footer>
+
+                        <span id="loginFalse" style="display: none;color: red;">Username or password is incorrect. Please try again!</span>
+                        <button type="button" id="btnLogin" class="btn btn-primary">
+                            Sign in
+                        </button>
+                    </footer>
+                </form>
+
+            </div>
+
+           
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    runAllForms();
+    $(document).keyup(function (event) {
+        if (event.keyCode === 13) {
+            $("#btnLogin").click();
+        }
+    });
+    $(document).on("click", "#btnLogin", function () {
+    if($("#email").val() == "admin" && $("#password").val()=="admin"){
+    window.location.href="/Home/Index";
+}
+        if ($("#email").val() == "") {
+            $("#email").css('border', '1px solid red');
+            return false;
+        } else if ($("#password").val() == "") {
+            $("#email").css('border', '1px solid green');
+            $("#password").css('border', '1px solid red');
+            return false;
+        } else {
+            OpenLoadingAjax();
+            $.ajax({
+                type: "POST",
+                url: "/Login/LogOn",
+                data: JSON.stringify({
+                    username: $("#email").val(),
+                    password: $("#password").val()
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                
+                    if (data.isSuccess == "success") {
+                        location.href = "/Staff/Index";
+                    }
+                    else {
+                        $("#loginFalse").css('display', 'block');
+                    }
+                    CloseLoadingAjax();
+                }
+            });
+        }
+    });
+</script>
+

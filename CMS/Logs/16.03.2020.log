@@ -1,0 +1,27 @@
+2020-03-16 11:26:51,515 INFO CMS.Controllers.LoginController - logon
+2020-03-16 13:16:48,368 INFO CMS.Controllers.LoginController - logon
+2020-03-16 13:33:43,863 ERROR CMS.Controllers.CustomerController - Error
+System.Net.WebException: The remote server returned an error: (404) Not Found.
+   at System.Net.HttpWebRequest.GetResponse()
+   at CMS.Controllers.CustomerController.ImageView(Int32 id) in D:\Projects\FileUploadServer\CMS\Controllers\CustomerController.cs:line 209
+2020-03-16 15:23:21,096 INFO CMS.Controllers.LoginController - logon
+2020-03-16 15:24:11,291 ERROR CMS.Controllers.CustomerController - Error
+System.Net.WebException: The remote server returned an error: (404) Not Found.
+   at System.Net.HttpWebRequest.GetResponse()
+   at CMS.Controllers.CustomerController.ImageView(Int32 id) in D:\Projects\FileUploadServer\CMS\Controllers\CustomerController.cs:line 209
+2020-03-16 15:25:21,304 ERROR CMS.Controllers.CustomerController - Error
+System.Net.WebException: The remote server returned an error: (404) Not Found.
+   at System.Net.HttpWebRequest.GetResponse()
+   at CMS.Controllers.CustomerController.ImageView(Int32 id) in D:\Projects\FileUploadServer\CMS\Controllers\CustomerController.cs:line 209
+2020-03-16 15:44:34,557 ERROR CMS.Controllers.CustomerController - Error
+System.Net.WebException: The remote server returned an error: (404) Not Found.
+   at System.Net.HttpWebRequest.GetResponse()
+   at CMS.Controllers.CustomerController.ImageView(Int32 id)
+2020-03-16 16:19:31,699 INFO CMS.Controllers.LoginController - logon
+2020-03-16 16:21:10,299 INFO CMS.Controllers.LoginController - logon
+2020-03-16 16:26:23,586 INFO CMS.Controllers.LoginController - logon
+2020-03-16 16:49:32,486 INFO CMS.Controllers.LoginController - logon
+2020-03-16 16:49:34,197 INFO CMS.Controllers.LoginController - logon
+2020-03-16 16:49:35,066 INFO CMS.Controllers.LoginController - logon
+2020-03-16 16:49:35,578 INFO CMS.Controllers.LoginController - logon
+2020-03-16 16:53:41,315 INFO CMS.Controllers.LoginController - logon

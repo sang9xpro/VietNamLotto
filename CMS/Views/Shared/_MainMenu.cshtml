@@ -1,0 +1,115 @@
+﻿
+<nav>
+    <!--
+    NOTE: Notice the gaps after each icon usage <i></i>..
+    Please note that these links work a bit different than
+    traditional href="" links. See documentation for details.
+    -->
+  
+    @{if(ViewBag.ShouldRedirect=="true"){
+          Response.Redirect("/Error/NotFound");
+    }}
+    <ul id="menuRole">
+        @* dynamic data *@
+        @{
+            if (ViewBag.ChosenModule != null)
+            {
+                foreach (var item in ViewBag.ChosenModule)
+                {
+                    if (item.Status == true)
+                    {
+
+
+                        <li id="fi-@item.ID">
+                            <a href="#" title="@item.Description"><i class="@item.Icon"></i> <span class="menu-item-parent">@item.Name</span></a>
+                            @if (Model != null)
+                            {
+                                <ul>
+                                    @foreach (var function in Model)
+                                    {
+                                        foreach (var a in function)
+                                        {
+                                            var FunctionDto = new BusinessDatabase.DataObj.FunctionDto();
+                                            FunctionDto.ID = a.ID;
+                                            FunctionDto.NAME = a.NAME;
+                                            FunctionDto.IS_NEW = a.IS_NEW;
+                                            FunctionDto.MODULE_ID = a.MODULE_ID;
+                                            FunctionDto.STATUS = a.STATUS;
+                                            FunctionDto.POSITION = a.POSITION;
+                                            FunctionDto.LINKURL = a.LINKURL;
+                                            if (FunctionDto.MODULE_ID == item.ID && FunctionDto.STATUS == true)
+                                            {
+
+
+                                                <li id="ci-@FunctionDto.ID">
+                                                    <a href="@FunctionDto.LINKURL" title="@FunctionDto.NAME">
+                                                        @a.NAME
+                                                        @if (FunctionDto.IS_NEW == true)
+                                                        {
+                                                            <span class="badge pull-right inbox-badge bg-color-greenLight active">New !</span>
+                                                        }
+                                                    </a>
+                                                </li>
+                                            }
+                                        }
+                                    }
+                                </ul>
+                            }
+                        </li>
+                    }
+                    
+
+                }
+            }
+             
+        }
+        @{
+            if (ViewBag.displaySpecialFunction == true)
+            {
+                 <li id="fi-9999">
+                     <a href="/RequestForm/IndexManager" title="User's requests"><i class="fas fa-check"></i> <span class="menu-item-parent">User's requests</span></a>
+        </li>
+            }
+        }
+        
+       
+    </ul>
+</nav>
+<input type="hidden" id="ShouldRedirect" value="@ViewBag.ShouldRedirect"/>
+<script src="~/Scripts/h3c-helper.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //get cookie for active menu
+        var fCookie = getCookie("fatherId");
+        var cCookie = getCookie("childId");
+        if (fCookie != "") {
+            $("#" + fCookie).addClass("active");
+        }
+        if (cCookie != "") {
+            $("#" + cCookie).addClass("active");
+        }
+        // set cookie when user click to menu
+        $(document).on("click", "li[id^='ci-']", function (e) {
+            var fatherId = $(this).parent().parent()[0].id;
+            var childId = $(this)[0].id;
+
+            setCookie("fatherId", fatherId, 1);
+            setCookie("childId", childId, 1);
+
+            $("#menuRole li").removeClass("active");
+
+            //e.preventDefault();
+
+        });
+        $(document).on("click", "li[id^='fi-']", function (e) {
+            
+            var fatherId = $(this)[0].id;
+
+            setCookie("fatherId", fatherId, 1);          
+            $("#menuRole li").removeClass("active");
+
+            //e.preventDefault();
+
+        });
+    });
+</script>

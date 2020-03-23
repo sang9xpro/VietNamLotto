@@ -1,0 +1,12 @@
+D:\Projects\FileUploadServer\BusinessDatabase\obj\Release\BusinessDatabase.csprojResolveAssemblyReference.cache
+D:\Projects\FileUploadServer\BusinessDatabase\bin\Release\BusinessDatabase.dll
+D:\Projects\FileUploadServer\BusinessDatabase\bin\Release\BusinessDatabase.pdb
+D:\Projects\FileUploadServer\BusinessDatabase\bin\Release\MySql.Data.dll
+D:\Projects\FileUploadServer\BusinessDatabase\bin\Release\Utilities.dll
+D:\Projects\FileUploadServer\BusinessDatabase\bin\Release\Utilities.pdb
+D:\Projects\FileUploadServer\BusinessDatabase\obj\Release\BusinessDatabase.dll
+D:\Projects\FileUploadServer\BusinessDatabase\obj\Release\BusinessDatabase.pdb
+D:\Projects\FileUploadServer\BusinessDatabase\bin\Release\Google.Protobuf.dll
+D:\Projects\FileUploadServer\BusinessDatabase\bin\Release\BouncyCastle.Crypto.dll
+D:\Projects\FileUploadServer\BusinessDatabase\bin\Release\Renci.SshNet.dll
+D:\Projects\FileUploadServer\BusinessDatabase\bin\Release\MySql.Data.xml

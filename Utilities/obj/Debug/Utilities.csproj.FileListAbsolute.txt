@@ -1,0 +1,10 @@
+D:\Projects\FileUploadServer\Utilities\bin\Debug\Utilities.dll
+D:\Projects\FileUploadServer\Utilities\bin\Debug\Utilities.pdb
+D:\Projects\FileUploadServer\Utilities\obj\Debug\Utilities.dll
+D:\Projects\FileUploadServer\Utilities\obj\Debug\Utilities.pdb
+D:\Projects\FileUploadServer\Utilities\obj\Debug\Utilities.csprojResolveAssemblyReference.cache
+C:\Users\Admin\source\repos\FileUploadServer\Utilities\bin\Debug\Utilities.dll
+C:\Users\Admin\source\repos\FileUploadServer\Utilities\bin\Debug\Utilities.pdb
+C:\Users\Admin\source\repos\FileUploadServer\Utilities\obj\Debug\Utilities.csprojAssemblyReference.cache
+C:\Users\Admin\source\repos\FileUploadServer\Utilities\obj\Debug\Utilities.dll
+C:\Users\Admin\source\repos\FileUploadServer\Utilities\obj\Debug\Utilities.pdb

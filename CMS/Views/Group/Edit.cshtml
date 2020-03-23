@@ -1,0 +1,255 @@
+﻿@model CMS.BusinessDatabase.Object.GroupDto
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/DatetimePicker/css/daterangepicker.css" rel="stylesheet" />
+<script src="~/Content/js/plugin/datatables/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/jquery.dataTables.customize.js"></script>
+<script src="~/Content/js/plugin/datatables/dataTables.colVis.min.js"></script>
+<script src="~/Content/js/plugin/datatables/dataTables.tableTools.min.js"></script>
+<script src="~/Content/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
+<script src="~/Content/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
+<script src="~/Content/DataTables-1.10.4/extensions/Scroller/js/dataTables.scroller.js"></script>
+<link href="~/Content/DataTables-1.10.4/extensions/Scroller/css/dataTables.scroller.min.css" rel="stylesheet" />
+<script src="~/Scripts/select2.min.js"></script>
+<script src="~/Content/DatetimePicker/js/moment.min.js"></script>
+<script src="~/Content/DatetimePicker/js/daterangepicker.js"></script>
+<script src="~/Content/js/smartwidgets/jarvis.widget.min.js"></script>
+<script src="~/Scripts/helper.js"></script>
+<script src="~/Scripts/woori-constants.js"></script>
+
+<script src="~/Content/js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        pageSetUp();
+        // toggle form
+
+        $('#togglingForm').bootstrapValidator({
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            live: "enabled",
+            fields: {
+                GROUP_NAME: {
+                    validators: {
+                        notEmpty: {
+                            message: 'The group name is required'
+                        }
+                    }
+                },
+                DESCRIPTION: {
+                    validators: {
+                        notEmpty: {
+                            message: 'The description is required'
+                        }
+                    }
+                },
+            }
+        }).on("success.form.bv", function (e) {
+            // chặn submit form
+            e.preventDefault();
+            // get form instance
+            var $form = $(e.target);
+            // get bootstrap validator instance
+            var bv = $form.data('bootstrapValidator');
+            //    console.log($("#STATUS"));
+            var a = $("#STATUS")[0].checked;
+            var i = 0;
+            if (a == false) {
+                i = 0;
+            } else {
+                i = 1;
+            }
+            console.log(a);
+            //    console.log($("#STATUS").value);
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("Edit")',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    ID: '@Model.ID',
+                    GROUP_NAME: $("#GROUP_NAME").val(),
+                    DESCRIPTION: $("#DESCRIPTION").val(),
+                    STATUS:i
+                }),
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    if(data.isSuccess == "success"){
+                        $("#resultWidget").html('   <div class="alert alert-success fade in"><button class="close" data-dismiss="alert">×</button><i class="fa-fw fa fa-check"></i>                <strong>Success!</strong> Group has been updated successfully.           </div>');
+                          setTimeout(function () { location.href = "@Url.Action("Index")"; }, 5000);
+                    } else {
+                        $("#resultWidget").html(' <div class="alert alert-danger fade in">                <button class="close" data-dismiss="alert">             ×                </button>                <i class="fa-fw fa fa-times"></i>                <strong>Error!</strong> Some data input wrong.            </div>');
+                    }
+
+                }
+
+            });
+            console.log("success form");
+        });
+
+        // end toggle form
+
+        $("#btnSubmit").click(function () {
+
+            console.log("clicked");
+
+        });
+
+        // click on STATUS ON-OFF input name like 'checkbox-toggle-*'
+        $(document).on("click", "input[name^='checkbox-toggle-']", function (data) {
+            var id = this.name.replace('checkbox-toggle-', '');
+            console.log("clicked");
+            console.log(id);
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("ToggleStatus")',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    id: id
+                }),
+                dataType: 'json',
+                success: function (data) {
+
+                },
+
+            });
+        });
+
+
+    });
+</script>
+<section id="widget-grid" class="">
+    <div class="row">
+        <!-- NEW WIDGET START -->
+        <article class="col-sm-12" id="resultWidget">
+
+            @*<div class="alert alert-warning fade out">
+                    <button class="close" data-dismiss="alert">
+                        ×
+                    </button>
+                    <i class="fa-fw fa fa-warning"></i>
+                    <strong>Warning</strong> Your monthly traffic is reaching limit.
+                </div>
+
+
+
+                <div class="alert alert-info fade out">
+                    <button class="close" data-dismiss="alert">
+                        ×
+                    </button>
+                    <i class="fa-fw fa fa-info"></i>
+                    <strong>Info!</strong> You have 198 unread messages.
+                </div>
+
+                <div class="alert alert-danger fade out">
+                    <button class="close" data-dismiss="alert">
+                        ×
+                    </button>
+                    <i class="fa-fw fa fa-times"></i>
+                    <strong>Error!</strong> The daily cronjob has failed.
+                </div>*@
+
+        </article>
+        <!-- WIDGET END -->
+        <!-- NEW COL START -->
+        <article class="col-sm-12 col-md-12 col-lg-12">
+
+            <!-- Widget ID (each widget will need unique ID)-->
+            <div class="jarviswidget" id="wid-id-1" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-custombutton="false">
+                <!-- widget options:
+                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+
+                data-widget-colorbutton="false"
+                data-widget-editbutton="false"
+                data-widget-togglebutton="false"
+                data-widget-deletebutton="false"
+                data-widget-fullscreenbutton="false"
+                data-widget-custombutton="false"
+                data-widget-collapsed="true"
+                data-widget-sortable="false"
+
+                -->
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                    <h2>Edit Form </h2>
+
+                </header>
+
+                <!-- widget div-->
+                <div>
+
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
+
+                    </div>
+                    <!-- end widget edit box -->
+                    <!-- widget content -->
+                    <div class="widget-body no-padding">
+
+                        <form id="togglingForm" class="smart-form" method="post">
+                            <header>
+                                Edit item <b>@Model.GROUP_NAME</b> 
+                            </header>
+                            <fieldset>
+                                <div class="form-group">
+                                    <label class="label control-label">Group name *</label>
+                                    <label class="input">
+                                        <input type="text" id="GROUP_NAME" name="GROUP_NAME" class="input-sm" value="@Model.GROUP_NAME">
+                                    </label>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <div class="form-group">
+                                    <label class="label">Description *</label>
+                                    <label class="textarea textarea-resizable">
+                                        <textarea rows="3" id="DESCRIPTION" name="DESCRIPTION" class="custom-scroll">@Model.DESCRIPTION</textarea>
+                                    </label>
+                                </div>
+                                <section class="col col-5">
+                                    <label class="toggle">
+                                        @{
+                                            var strChecked="checked='checked'";
+                                            if (Model.STATUS != 1)
+                                            {
+                                                strChecked = "";
+                                            }
+                                        }
+                                        <input type="checkbox" id="STATUS" name="STATUS" @strChecked style="">
+                                        <i data-swchon-text="ON" data-swchoff-text="OFF"></i>Status
+                                    </label>
+                                </section>
+                            </fieldset>
+                            <footer>
+                                <button type="submit" id="btnSubmit" class="btn btn-primary">
+                                    Submit
+                                </button>
+                                <button type="button" class="btn btn-default" onclick="window.history.back();">
+                                    Back
+                                </button>
+                            </footer>
+                        </form>
+
+                    </div>
+                    <!-- end widget content -->
+
+                </div>
+                <!-- end widget div -->
+
+            </div>
+            <!-- end widget -->
+
+        </article>
+        <!-- END COL -->
+
+    </div>
+</section>

@@ -1,0 +1,41 @@
+C:\Users\Admin\Documents\File Upload Sever\TestOnly\bin\Debug\TestOnly.exe.config
+C:\Users\Admin\Documents\File Upload Sever\TestOnly\bin\Debug\TestOnly.exe
+C:\Users\Admin\Documents\File Upload Sever\TestOnly\bin\Debug\TestOnly.pdb
+C:\Users\Admin\Documents\File Upload Sever\TestOnly\bin\Debug\BusinessDatabase.dll
+C:\Users\Admin\Documents\File Upload Sever\TestOnly\bin\Debug\MySql.Data.dll
+C:\Users\Admin\Documents\File Upload Sever\TestOnly\bin\Debug\Google.Protobuf.dll
+C:\Users\Admin\Documents\File Upload Sever\TestOnly\bin\Debug\BouncyCastle.Crypto.dll
+C:\Users\Admin\Documents\File Upload Sever\TestOnly\bin\Debug\Ubiety.Dns.Core.dll
+C:\Users\Admin\Documents\File Upload Sever\TestOnly\bin\Debug\Renci.SshNet.dll
+C:\Users\Admin\Documents\File Upload Sever\TestOnly\bin\Debug\BusinessDatabase.pdb
+C:\Users\Admin\Documents\File Upload Sever\TestOnly\bin\Debug\MySql.Data.xml
+C:\Users\Admin\Documents\File Upload Sever\TestOnly\obj\Debug\TestOnly.csprojResolveAssemblyReference.cache
+C:\Users\Admin\Documents\File Upload Sever\TestOnly\obj\Debug\TestOnly.exe
+C:\Users\Admin\Documents\File Upload Sever\TestOnly\obj\Debug\TestOnly.pdb
+D:\Projects\FileUploadServer\TestOnly\bin\Debug\TestOnly.exe.config
+D:\Projects\FileUploadServer\TestOnly\bin\Debug\TestOnly.exe
+D:\Projects\FileUploadServer\TestOnly\bin\Debug\TestOnly.pdb
+D:\Projects\FileUploadServer\TestOnly\bin\Debug\BusinessDatabase.dll
+D:\Projects\FileUploadServer\TestOnly\bin\Debug\MySql.Data.dll
+D:\Projects\FileUploadServer\TestOnly\bin\Debug\Utilities.dll
+D:\Projects\FileUploadServer\TestOnly\bin\Debug\BusinessDatabase.pdb
+D:\Projects\FileUploadServer\TestOnly\bin\Debug\Utilities.pdb
+D:\Projects\FileUploadServer\TestOnly\obj\Debug\TestOnly.csprojResolveAssemblyReference.cache
+D:\Projects\FileUploadServer\TestOnly\obj\Debug\TestOnly.exe
+D:\Projects\FileUploadServer\TestOnly\obj\Debug\TestOnly.pdb
+C:\Users\Admin\source\repos\FileUploadServer\TestOnly\bin\Debug\TestOnly.exe.config
+C:\Users\Admin\source\repos\FileUploadServer\TestOnly\bin\Debug\TestOnly.exe
+C:\Users\Admin\source\repos\FileUploadServer\TestOnly\bin\Debug\TestOnly.pdb
+C:\Users\Admin\source\repos\FileUploadServer\TestOnly\bin\Debug\BusinessDatabase.dll
+C:\Users\Admin\source\repos\FileUploadServer\TestOnly\bin\Debug\MySql.Data.dll
+C:\Users\Admin\source\repos\FileUploadServer\TestOnly\bin\Debug\Utilities.dll
+C:\Users\Admin\source\repos\FileUploadServer\TestOnly\bin\Debug\Google.Protobuf.dll
+C:\Users\Admin\source\repos\FileUploadServer\TestOnly\bin\Debug\BouncyCastle.Crypto.dll
+C:\Users\Admin\source\repos\FileUploadServer\TestOnly\bin\Debug\Renci.SshNet.dll
+C:\Users\Admin\source\repos\FileUploadServer\TestOnly\bin\Debug\BusinessDatabase.pdb
+C:\Users\Admin\source\repos\FileUploadServer\TestOnly\bin\Debug\MySql.Data.xml
+C:\Users\Admin\source\repos\FileUploadServer\TestOnly\bin\Debug\Utilities.pdb
+C:\Users\Admin\source\repos\FileUploadServer\TestOnly\obj\Debug\TestOnly.csprojAssemblyReference.cache
+C:\Users\Admin\source\repos\FileUploadServer\TestOnly\obj\Debug\TestOnly.csproj.CopyComplete
+C:\Users\Admin\source\repos\FileUploadServer\TestOnly\obj\Debug\TestOnly.exe
+C:\Users\Admin\source\repos\FileUploadServer\TestOnly\obj\Debug\TestOnly.pdb

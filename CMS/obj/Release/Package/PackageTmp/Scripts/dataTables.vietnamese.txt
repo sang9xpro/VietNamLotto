@@ -1,0 +1,17 @@
+﻿{
+    "sProcessing":   "<img src='/Content/img/loading-image-red.gif'>",
+    "sLengthMenu":   "Xem _MENU_ bản ghi",
+    "sZeroRecords":  "Không tìm thấy bản ghi nào phù hợp",
+    "sInfo":         "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ bản ghi",
+    "sInfoEmpty":    "Đang xem 0 đến 0 trong tổng số 0 bản ghi",
+    "sInfoFiltered": "(được lọc từ _MAX_ bản ghi)",
+	"sSearch": "Tìm:",
+	"oPaginate": {
+	"sFirst": "Đầu",
+	"sPrevious": "Trước",
+	"sNext": "Tiếp",
+	"sLast": "Cuối",
+
+	}
+
+}

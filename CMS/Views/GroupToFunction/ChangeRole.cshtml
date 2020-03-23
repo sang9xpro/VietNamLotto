@@ -1,0 +1,425 @@
+﻿@model List<BusinessDatabase.DataObj.Response.GroupToFunctionDataResponse>
+@using System.Web.Configuration
+
+@{
+    ViewBag.Title = "Set Role For Group";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- PAGE RELATED PLUGIN(S) -->
+
+
+<link href="~/Content/DatetimePicker/css/daterangepicker.css" rel="stylesheet" />
+<script src="~/Content/js/plugin/datatables/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/jquery.dataTables.customize.js"></script>
+<script src="~/Content/js/plugin/datatables/dataTables.colVis.min.js"></script>
+<script src="~/Content/js/plugin/datatables/dataTables.tableTools.min.js"></script>
+<script src="~/Content/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
+<script src="~/Content/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
+<script src="~/Content/DataTables-1.10.4/extensions/Scroller/js/dataTables.scroller.js"></script>
+<link href="~/Content/DataTables-1.10.4/extensions/Scroller/css/dataTables.scroller.min.css" rel="stylesheet" />
+<script src="~/Scripts/select2.min.js"></script>
+<script src="~/Content/DatetimePicker/js/moment.min.js"></script>
+<script src="~/Content/DatetimePicker/js/daterangepicker.js"></script>
+<script src="~/Content/js/smartwidgets/jarvis.widget.min.js"></script>
+<script src="~/Scripts/helper.js"></script>
+<script src="~/Scripts/woori-constants.js"></script>
+<link href="~/Content/fontawesome-iconpicker-master/dist/css/all.css" rel="stylesheet" />
+<link href="~/Content/fontawesome-iconpicker-master/dist/css/fontawesome-iconpicker.min.css" rel="stylesheet" />
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        pageSetUp();
+        var listMaxPosition;
+        $(document).keyup(function (event) {
+            if (event.keyCode === 13) {
+                $("#btnSearch").click();
+            }
+        });
+
+        // click on STATUS ON-OFF input name like 'checkbox-toggle-*'
+        $(document).on("click", "input[name^='checkbox-toggle-check']", function (data) {
+            var id = this.name.replace('checkbox-toggle-check', '');
+
+            var s = id.split('-');
+            if (s[0] != "all") {
+
+          
+            var str = "ToggleAllow" + s[0];
+            console.log("clicked");
+            console.log(id);
+
+            $.ajax({
+                type: 'POST',
+                url: '/GroupToFunction/' + str,
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    id: s[1],
+                    idGroup: '@ViewBag.groupId'
+                }),
+                dataType: 'json',
+                success: function (data) {
+
+                }
+            });
+            }
+        });
+
+        // click on STATUS ON-OFF input name like 'checkbox-toggle-*'
+        $(document).on("click", "input[name^='checkbox-toggle-checkall-']", function (data) {
+            var id = this.name.replace('checkbox-toggle-checkall-', '');
+            var val = $(this)[0].checked;
+
+            console.log(val);
+            if ($("input[name='checkbox-toggle-checkview-" + id + "']")[0].checked != val) {
+                $("input[name='checkbox-toggle-checkview-" + id + "']").trigger("click");
+            }
+            if ($("input[name='checkbox-toggle-checkadd-" + id + "']")[0].checked != val) {
+                $("input[name='checkbox-toggle-checkadd-" + id + "']").trigger("click");
+            }
+            if ($("input[name='checkbox-toggle-checkedit-" + id + "']")[0].checked != val) {
+                $("input[name='checkbox-toggle-checkedit-" + id + "']").trigger("click");
+            }
+            if ($("input[name='checkbox-toggle-checkdel-" + id + "']")[0].checked != val) {
+                $("input[name='checkbox-toggle-checkdel-" + id + "']").trigger("click");
+            }
+            if ($("input[name='checkbox-toggle-checkexport-" + id + "']")[0].checked != val) {
+                $("input[name='checkbox-toggle-checkexport-" + id + "']").trigger("click");
+            }
+        });
+
+        $(document).on("focusin", "input[id^='POSITION-']", function (data) {
+            $("input[id^='POSITION-']").focusout(function () {
+                console.log('out');
+                var id = $(this)[0].id.replace('POSITION-', '');
+                var oldval = $(this).attr("data-id");
+                var newval = $(this).val();
+                var iTotal = oTable.fnSettings().fnRecordsTotal();
+                // prevent wrong input data < 0
+                if (newval <= 0) newval = 1;
+                    // prevent wrong input data > max size => set to max size
+                else if (newval >= iTotal) {
+                    newval = iTotal;
+                }
+
+                console.log(id);
+                console.log(oldval);
+                console.log(newval);
+                var val = newval - oldval;
+                // only call ajax update when change Position value
+                if (val != 0) {
+                    // call ajax here
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("MovePosition")',
+                        contentType: 'application/json; charset=utf-8',
+                        data: JSON.stringify({
+                            id: id,
+                            val: val
+                        }),
+                        dataType: 'json',
+                        success: function (data) {
+                            // after change position of current menu, need to change all another related menu
+
+                            $('#' + idOfDatatable).dataTable().fnDraw();
+                        }
+                    });
+                }
+                console.log("val:" + val);
+                console.log("focusout");
+            });
+
+        });
+
+        // click on move up, down MENU POSITION
+        $(document).on("click", "i", function (data) {
+            //console.log("click i");
+            idMenu = $(this).attr("data-id");
+            val = "";
+            //click down
+            if ($(this).hasClass("fas fa-angle-down")) {
+                val = "1";
+            }
+                // click up
+            else if ($(this).hasClass("fas fa-angle-up")) {
+                val = "-1";
+            }
+            if (val != "") {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("MovePosition")',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify({
+                        id: idMenu,
+                        val: val
+                    }),
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#' + idOfDatatable).dataTable().fnDraw();
+                    }
+                });
+            }
+        });
+
+        $(document).on("click", "i[id^='del-']", function () {
+            ////console.log("clicked");
+            var id = this.id.replace('del-', '');
+            ////console.log("clicked");
+            ////console.log(id);
+            $.SmartMessageBox({
+                "title": "<i class='fa fa-times txt-color-orangeDark'></i> Delete record id <span class='txt-color-orangeDark'><strong>" + id + "</strong></span> ?",
+                "content": "Please make sure because <strong class='txt-color-orangeDark'>we cannot recover this information!</strong>" || "",
+                "buttons": "[No][Yes]"
+            }, function (a) {
+                //console.log(a);
+                if (a == "Yes") {
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("Delete")',
+                        contentType: 'application/json; charset=utf-8',
+                        data: JSON.stringify({
+                            id: id
+                        }),
+                        dataType: 'json',
+                        success: function (data) {
+                            $('#' + idOfDatatable).dataTable().fnDraw();
+                        }
+                    });
+                    ($.root_.addClass("animated fadeOutUp"), setTimeout(500, 1e3));
+                }
+
+
+            });
+        });
+
+
+
+
+
+        var optionSet1 = {
+            startDate: moment().subtract(7, 'days'),
+            //startDate: moment("01-01-2016", ["MM-DD-YYYY", "YYYY-MM-DD"]).startOf('year'),
+            endDate: moment(),
+            minDate: moment().startOf('year'),
+            //minDate: moment("07-01-2016", ["MM-DD-YYYY", "YYYY-MM-DD"]).startOf('year'),
+            maxDate: moment().endOf('year'),
+            dateLimit: { days: 360 },
+            showDropdowns: true,
+            showWeekNumbers: true,
+            timePicker: false,
+            timePickerIncrement: 2,
+            timePicker12Hour: true,
+            ranges: {
+                'Hôm nay': [moment(), moment()],
+                'Hôm qua': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                '7 ngày trước': [moment().subtract(6, 'days'), moment()],
+                'Tháng này': [moment().startOf('month'), moment()],
+                'Tháng trước': [moment().subtract(1, 'month').startOf('month'), moment()],
+                'Năm này': [moment().startOf('year'), moment()],
+            },
+            opens: 'left',
+            buttonClasses: ['btn btn-default'],
+            applyClass: 'btn-small btn-primary',
+            cancelClass: 'btn-small',
+            format: 'DD/MM/YYYY',
+            separator: ' to ',
+            locale: {
+                applyLabel: 'Chọn',
+                cancelLabel: 'Thoát',
+                fromLabel: 'Từ',
+                toLabel: 'Đến',
+                customRangeLabel: 'Trong khoảng',
+                daysOfWeek: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+                monthNames: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+                firstDay: 1
+            }
+        };
+        // init default parameter
+        $('#DateRange').val(moment().format('DD/MM/YYYY') + ' - ' + moment().format('DD/MM/YYYY'));
+        $('#hddDateFrom').val(moment().subtract(7, 'days').format('MM/DD/YYYY'));
+        $('#hddDateTo').val(moment().format('MM/DD/YYYY'));
+        // callback
+        var cb = function (start, end) {
+            // re-display
+            $('#DateRange').val(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+            // re-init
+            $('#hddDateFrom').val(start.format('MM/DD/YYYY'));
+            $('#hddDateTo').val(end.format('MM/DD/YYYY'));
+        };
+        // init daterangepiker
+        $('#DateRange').daterangepicker(optionSet1, cb);
+    });
+</script>
+
+<!-- widget grid -->
+<section id="widget-grid" class="">
+
+
+    <!-- START ROW -->
+
+    <div class="row">
+
+        <!-- NEW COL START -->
+        <article class="col-sm-12 col-md-12">
+
+            <!-- Widget ID (each widget will need unique ID)-->
+            <div class="jarviswidget" id="wid-id-2" data-widget-editbutton="false" data-widget-custombutton="false">
+                <!-- widget options:
+                    usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+
+                    data-widget-colorbutton="false"
+                    data-widget-editbutton="false"
+                    data-widget-togglebutton="false"
+                    data-widget-deletebutton="false"
+                    data-widget-fullscreenbutton="false"
+                    data-widget-custombutton="false"
+                    data-widget-collapsed="true"
+                    data-widget-sortable="false"
+
+                -->
+
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                    <h2><strong>Result data</strong> </h2>
+
+                </header>
+
+                <!-- widget div-->
+                <div>
+
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
+
+                    </div>
+                    <!-- end widget edit box -->
+                    <!-- widget content -->
+                    <div class="widget-body no-padding">
+
+                        <div class="table-responsive">
+
+
+                            <table id="dt_basic" class="table table-bordered">
+                                <thead>
+                                    <tr>
+
+                                        <th>Function Name</th>
+                                        <th>Toggle View</th>
+                                        <th>Toggle Add</th>
+                                        <th>Toggle Edit</th>
+                                        <th>Toggle Delete</th>
+                                        <th>Toggle Export</th>
+                                        <th>Toggle All</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @foreach (var item in Model.ToList())
+                                    {
+                                        <tr>
+                                            <td>@item.FNAME</td>
+                                            <td>
+                                                @{
+                                        var checkView = "checked";
+                                        var checkAdd = "checked";
+                                        var checkExport = "checked";
+                                        var checkEdit = "checked";
+                                        var checkDel = "checked";
+                                                }
+                                                @if (item.ALLOW_VIEW == 0)
+                                                {
+                                                    checkView = "";
+                                                }
+                                                <div class="smart-form">
+                                                    <label class="toggle">
+                                                        <input type="checkbox" name="checkbox-toggle-checkview-@item.ID_FUNCTION" @checkView>
+                                                        <i data-swchon-text="ON" data-swchoff-text="OFF"></i>
+                                                    </label>
+                                                </div>
+
+                                            </td>
+                                            <td>
+                                                @if (item.ALLOW_ADD == 0)
+                                                {
+                                                    checkAdd = "";
+                                                }
+                                                <div class="smart-form">
+                                                    <label class="toggle">
+                                                        <input type="checkbox" name="checkbox-toggle-checkadd-@item.ID_FUNCTION" @checkAdd>
+                                                        <i data-swchon-text="ON" data-swchoff-text="OFF"></i>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @if (item.ALLOW_EDIT == 0)
+                                            {
+                                                checkEdit = "";
+                                            }
+                                                <div class="smart-form">
+                                                    <label class="toggle">
+                                                        <input type="checkbox" name="checkbox-toggle-checkedit-@item.ID_FUNCTION" @checkEdit>
+                                                        <i data-swchon-text="ON" data-swchoff-text="OFF"></i>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @if (item.ALLOW_DEL == 0)
+                                        {
+                                            checkDel = "";
+                                        }
+                                                <div class="smart-form">
+                                                    <label class="toggle">
+                                                        <input type="checkbox" name="checkbox-toggle-checkdel-@item.ID_FUNCTION" @checkDel>
+                                                        <i data-swchon-text="ON" data-swchoff-text="OFF"></i>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @if (item.ALLOW_EXPORT == 0)
+                                                {
+                                                    checkExport = "";
+                                                }
+                                                <div class="smart-form">
+                                                    <label class="toggle">
+                                                        <input type="checkbox" name="checkbox-toggle-checkexport-@item.ID_FUNCTION" @checkExport>
+                                                        <i data-swchon-text="ON" data-swchoff-text="OFF"></i>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="smart-form">
+                                                    <label class="toggle">
+                                                        <input type="checkbox" name="checkbox-toggle-checkall-@item.ID_FUNCTION">
+                                                        <i data-swchon-text="ON" data-swchoff-text="OFF"></i>
+                                                    </label>
+                                                </div>
+                                            </td>
+
+
+
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                    </div>
+                    <!-- end widget content -->
+
+                </div>
+                <!-- end widget div -->
+
+            </div>
+            <!-- end widget -->
+
+
+        </article>
+        <!-- END COL -->
+
+
+    </div>
+    <!-- END ROW -->
+
+</section>
+<!-- end widget grid -->

@@ -1,0 +1,49 @@
+2020-03-10 10:59:48,496 INFO CMS.Controllers.LoginController - logon
+2020-03-10 13:05:33,617 ERROR CMS.Controllers.CustomerController - Error
+System.Net.WebException: The remote server returned an error: (404) Not Found.
+   at System.Net.HttpWebRequest.GetResponse()
+   at CMS.Controllers.CustomerController.ImageView(Int32 id) in D:\Projects\FileUploadServer\CMS\Controllers\CustomerController.cs:line 165
+2020-03-10 13:06:39,290 ERROR CMS.Controllers.CustomerController - Error
+System.Net.WebException: The remote server returned an error: (404) Not Found.
+   at System.Net.HttpWebRequest.GetResponse()
+   at CMS.Controllers.CustomerController.ImageView(Int32 id) in D:\Projects\FileUploadServer\CMS\Controllers\CustomerController.cs:line 165
+2020-03-10 13:09:08,798 ERROR CMS.Controllers.CustomerController - Error
+System.Net.WebException: The remote server returned an error: (404) Not Found.
+   at System.Net.HttpWebRequest.GetResponse()
+   at CMS.Controllers.CustomerController.ImageView(Int32 id) in D:\Projects\FileUploadServer\CMS\Controllers\CustomerController.cs:line 165
+2020-03-10 13:16:25,077 ERROR CMS.Controllers.CustomerController - Error
+System.Net.WebException: The remote server returned an error: (403) Forbidden.
+   at System.Net.HttpWebRequest.GetResponse()
+   at CMS.Controllers.CustomerController.ImageView(Int32 id) in D:\Projects\FileUploadServer\CMS\Controllers\CustomerController.cs:line 165
+2020-03-10 13:16:26,446 ERROR CMS.Controllers.CustomerController - Error
+System.Net.WebException: The remote server returned an error: (403) Forbidden.
+   at System.Net.HttpWebRequest.GetResponse()
+   at CMS.Controllers.CustomerController.ImageView(Int32 id) in D:\Projects\FileUploadServer\CMS\Controllers\CustomerController.cs:line 165
+2020-03-10 13:18:13,640 ERROR CMS.Controllers.CustomerController - Error
+System.Net.WebException: The remote server returned an error: (403) Forbidden.
+   at System.Net.HttpWebRequest.GetResponse()
+   at CMS.Controllers.CustomerController.ImageView(Int32 id) in D:\Projects\FileUploadServer\CMS\Controllers\CustomerController.cs:line 165
+2020-03-10 13:19:07,752 ERROR CMS.Controllers.CustomerController - Error
+System.Net.WebException: The remote server returned an error: (403) Forbidden.
+   at System.Net.HttpWebRequest.GetResponse()
+   at CMS.Controllers.CustomerController.ImageView(Int32 id) in D:\Projects\FileUploadServer\CMS\Controllers\CustomerController.cs:line 165
+2020-03-10 13:19:41,860 ERROR CMS.Controllers.CustomerController - Error
+System.Net.WebException: The remote server returned an error: (403) Forbidden.
+   at System.Net.HttpWebRequest.GetResponse()
+   at CMS.Controllers.CustomerController.ImageView(Int32 id) in D:\Projects\FileUploadServer\CMS\Controllers\CustomerController.cs:line 165
+2020-03-10 13:21:41,635 ERROR CMS.Controllers.CustomerController - Error
+System.Net.WebException: The remote server returned an error: (403) Forbidden.
+   at System.Net.HttpWebRequest.GetResponse()
+   at CMS.Controllers.CustomerController.ImageView(Int32 id) in D:\Projects\FileUploadServer\CMS\Controllers\CustomerController.cs:line 165
+2020-03-10 13:29:02,721 ERROR CMS.Controllers.CustomerController - Error
+System.ArgumentException: URI formats are not supported.
+   at System.IO.Path.LegacyNormalizePath(String path, Boolean fullCheck, Int32 maxPathLength, Boolean expandShortPaths)
+   at System.IO.Path.NormalizePath(String path, Boolean fullCheck, Int32 maxPathLength, Boolean expandShortPaths)
+   at System.IO.Path.GetFullPathInternal(String path)
+   at System.IO.FileInfo.Init(String fileName, Boolean checkHost)
+   at System.IO.FileInfo..ctor(String fileName)
+   at CallSite.Target(Closure , CallSite , Type , Object )
+   at System.Dynamic.UpdateDelegates.UpdateAndExecute2[T0,T1,TRet](CallSite site, T0 arg0, T1 arg1)
+   at CMS.Controllers.CustomerController.ImageView(Int32 id)
+2020-03-10 13:58:22,076 INFO CMS.Controllers.LoginController - logon
+2020-03-10 16:14:12,158 INFO CMS.Controllers.LoginController - logon

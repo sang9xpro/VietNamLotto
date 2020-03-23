@@ -1,0 +1,5 @@
+D:\Projects\FileUploadServer\Utilities\bin\Release\Utilities.dll
+D:\Projects\FileUploadServer\Utilities\bin\Release\Utilities.pdb
+D:\Projects\FileUploadServer\Utilities\obj\Release\Utilities.csprojResolveAssemblyReference.cache
+D:\Projects\FileUploadServer\Utilities\obj\Release\Utilities.dll
+D:\Projects\FileUploadServer\Utilities\obj\Release\Utilities.pdb

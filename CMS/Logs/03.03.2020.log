@@ -1,0 +1,20 @@
+2020-03-03 08:50:18,415 INFO CMS.Controllers.LoginController - logon
+2020-03-03 08:51:50,201 ERROR CMS.Controllers.CustomerController - Error
+System.Net.WebException: The remote server returned an error: (404) Not Found.
+   at System.Net.HttpWebRequest.GetResponse()
+   at CMS.Controllers.CustomerController.ImageView(Int32 id) in D:\Projects\FileUploadServer\CMS\Controllers\CustomerController.cs:line 148
+2020-03-03 08:51:55,886 ERROR CMS.Controllers.CustomerController - Error
+System.Net.WebException: The remote server returned an error: (404) Not Found.
+   at System.Net.HttpWebRequest.GetResponse()
+   at CMS.Controllers.CustomerController.ImageView(Int32 id) in D:\Projects\FileUploadServer\CMS\Controllers\CustomerController.cs:line 148
+2020-03-03 10:27:27,525 ERROR CMS.Controllers.CustomerController - Error
+System.Net.WebException: The remote server returned an error: (404) Not Found.
+   at System.Net.HttpWebRequest.GetResponse()
+   at CMS.Controllers.CustomerController.ImageView(Int32 id)
+2020-03-03 12:54:22,450 INFO CMS.Controllers.LoginController - logon
+2020-03-03 12:55:32,176 ERROR CMS.Controllers.CustomerController - Error
+System.Net.WebException: The remote server returned an error: (404) Not Found.
+   at System.Net.HttpWebRequest.GetResponse()
+   at CMS.Controllers.CustomerController.ImageView(Int32 id)
+2020-03-03 15:57:55,133 INFO CMS.Controllers.LoginController - logon
+2020-03-03 16:16:57,066 INFO CMS.Controllers.LoginController - logon

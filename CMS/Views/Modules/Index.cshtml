@@ -1,0 +1,587 @@
+﻿@using System.Web.Configuration
+
+@{
+    ViewBag.Title = "Modules Management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- PAGE RELATED PLUGIN(S) -->
+
+
+<link href="~/Content/DatetimePicker/css/daterangepicker.css" rel="stylesheet" />
+<script src="~/Content/js/plugin/datatables/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/jquery.dataTables.customize.js"></script>
+<script src="~/Content/js/plugin/datatables/dataTables.colVis.min.js"></script>
+<script src="~/Content/js/plugin/datatables/dataTables.tableTools.min.js"></script>
+<script src="~/Content/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
+<script src="~/Content/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
+<script src="~/Content/DataTables-1.10.4/extensions/Scroller/js/dataTables.scroller.js"></script>
+<link href="~/Content/DataTables-1.10.4/extensions/Scroller/css/dataTables.scroller.min.css" rel="stylesheet" />
+<script src="~/Scripts/select2.min.js"></script>
+<script src="~/Content/DatetimePicker/js/moment.min.js"></script>
+<script src="~/Content/DatetimePicker/js/daterangepicker.js"></script>
+<script src="~/Content/js/smartwidgets/jarvis.widget.min.js"></script>
+<script src="~/Scripts/woori-helper.js"></script>
+<script src="~/Scripts/woori-constants.js"></script>
+<link href="~/Content/fontawesome-iconpicker-master/dist/css/fontawesome-iconpicker.min.css" rel="stylesheet" />
+<link href="~/Content/fontawesome-iconpicker-master/dist/css/all.css" rel="stylesheet" />
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        pageSetUp();
+        $(document).keyup(function (event) {
+            if (event.keyCode === 13) {
+                $("#btnSearch").click();
+            }
+        });
+        // click on STATUS ON-OFF input name like 'checkbox-toggle-*'
+        $(document).on("click", "input[name^='checkbox-toggle-']", function (data) {
+            var id = this.name.replace('checkbox-toggle-', '');
+            ////console.log("clicked");
+            ////console.log(id);
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("ToggleStatus")',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    id: id
+                }),
+                dataType: 'json',
+                success: function (data) {
+
+                }
+            });
+        });
+
+        $(document).on("focusin", "input[id^='POSITION-']", function (data) {
+            $("input[id^='POSITION-']").focusout(function () {
+           //     console.log('out');
+                var id = $(this)[0].id.replace('POSITION-', '');
+                var oldval = $(this).attr("data-id");
+                var newval = $(this).val();
+                var iTotal = oTable.fnSettings().fnRecordsTotal();
+                // prevent wrong input data < 0
+                if (newval <= 0) newval = 1;
+                    // prevent wrong input data > max size => set to max size
+                else if (newval >= iTotal) {
+                    newval = iTotal;
+                }
+
+                //console.log(id);
+                //console.log(oldval);
+                //console.log(newval);
+                var val = newval - oldval;
+                // only call ajax update when change Position value 
+                if (val != 0) {
+                    // call ajax here
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("MovePosition")',
+                        contentType: 'application/json; charset=utf-8',
+                        data: JSON.stringify({
+                            id: id,
+                            val: val
+                        }),
+                        dataType: 'json',
+                        success: function (data) {
+                            // after change position of current menu, need to change all another related menu
+
+                            $('#' + idOfDatatable).dataTable().fnDraw();
+                        }
+                    });
+                }
+                //console.log("val:" + val);
+                //console.log("focusout");
+            });
+        
+        });
+
+        // click on move up, down MENU POSITION
+        $(document).on("click", "i", function (data) {
+            console.log("click i");
+            idMenu = $(this).attr("data-id");
+            val = "";
+            //click down
+            if ($(this).hasClass("fas fa-angle-down")) {
+                val = "1";
+            }
+                // click up
+            else if ($(this).hasClass("fas fa-angle-up")) {
+                val = "-1";
+            }
+            if (val != "") {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("MovePosition")',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify({
+                        id: idMenu,
+                        val: val
+                    }),
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#' + idOfDatatable).dataTable().fnDraw();
+                    }
+                });
+            }
+         
+            
+        });
+
+        $(document).on("click", "i[id^='del-']", function () {
+            ////console.log("clicked");
+            var id = this.id.replace('del-', '');
+            ////console.log("clicked");
+            ////console.log(id);
+            $.SmartMessageBox({
+                "title": "<i class='fa fa-times txt-color-orangeDark'></i> Delete record id <span class='txt-color-orangeDark'><strong>" + id + "</strong></span> ?",
+                "content": "Please make sure because <strong class='txt-color-orangeDark'>we cannot recover this information!</strong>" || "",
+                "buttons": "[No][Yes]"
+            }, function (a) {
+                //console.log(a);
+                if (a == "Yes") {
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("Delete")',
+                        contentType: 'application/json; charset=utf-8',
+                        data: JSON.stringify({
+                            id: id
+                        }),
+                        dataType: 'json',
+                        success: function (data) {
+                            $('#' + idOfDatatable).dataTable().fnDraw();
+                        }
+                    });
+                    ($.root_.addClass("animated fadeOutUp"), setTimeout(500, 1e3));
+                }
+
+
+            });
+        });
+
+        var idOfDatatable = "dt_basic";
+        var responsiveHelperDtBasic = undefined;
+        var breakpointDefinition = {
+            tablet: 1024,
+            phone: 480
+        };
+
+        var oTable = $('#' + idOfDatatable).dataTable({
+            "oLanguage": {
+                "sUrl": "/Scripts/dataTables.vietnamese.txt"
+            },
+            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>" +
+                "t" +
+                "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
+            "autoWidth": true,
+            "bServerSide": true,
+            "bStateSave": true,
+            "sAjaxSource": "@Url.Action("AjaxGetDataPaging")",
+            "bProcessing": true,
+            "aaSorting": [[0, 'desc']],
+            "aoColumns": [
+                 {
+                     "sName": "ID",
+                     "sWidth": "7%",
+                     "bSearchable": false,
+                     "bSortable": true,
+                     "sClass": "center",
+                     "mData": "Id"
+                 },
+                  {
+                      "sName": "NAME",
+                      "sWidth": "15%",
+                      "bSearchable": false,
+                      "bSortable": true,
+                      "mData": "Name",
+                      "sClass": "center"
+
+                  },
+                    {
+                        "sName": "DESCRIPTION",
+                        "sWidth": "15%",
+                        "bSearchable": false,
+                        "bSortable": true,
+                        "sClass": "center",
+                        "mData": "Description"
+                    },
+                     {
+                         "sName": "STATUS",
+                         "sWidth": "10%",
+                         "bSearchable": false,
+                         "bSortable": true,
+                         "sClass": "center",
+                         "mData": "Status",
+                         "mRender": function (data, type, full) {
+                             var result = "";
+                             if (data == 0) {
+                                 result += '   <div class="smart-form">' +
+                            '<label class="toggle"><input type="checkbox" name="checkbox-toggle-' + full.ID + '">	<i data-swchon-text="ON" data-swchoff-text="OFF"></i></label></div>';
+                             } else {
+                                 result += ' <div class="smart-form">' + '<label class="toggle"><input type="checkbox" name="checkbox-toggle-' + full.ID + '" checked="checked">	<i data-swchon-text="ON" data-swchoff-text="OFF"></i></label></div>';
+                             }
+                             return result;
+                         }
+                     },
+                     {
+                         "sName": "ICON",
+                         "sWidth": "10%",
+                         "bSearchable": false,
+                         "bSortable": true,
+                         "sClass": "center",
+                         "mData": "Icon",
+                         "mRender": function (data, type, full) {
+                             //console.log(data);
+                             var result = data + " <i class='" + data + " text-warning'></i>";
+
+                             return result;
+                         }
+                     },
+                    {
+                        "sName": "MODIFIED_BY",
+                        "sWidth": "10%",
+                        "bSearchable": false,
+                        "bSortable": true,
+                        "sClass": "center",
+                        "mData": "ModifiedBy",
+                        "mRender": function (data, type, full) {
+                            var result = "Module registered";
+                            if (data != "0") {
+                                result = data;
+                            }
+                            return result;
+                        }
+                    }
+                    ,
+                    {
+                        "sName": "MODIFIED_DATE",
+                        "sWidth": "10%",
+                        "bSearchable": false,
+                        "bSortable": true,
+                        "sClass": "center",
+                        "mData": "ModifiedDate"
+
+
+                    },
+                    {
+                        "sName": "POSITION",
+                        "sWidth": "10%",
+                        "bSearchable": false,
+                        "bSortable": true,
+                        "sClass": "center",
+                        "mData": "position",
+                        "mRender": function (data, type, full) {
+                            var iTotal = oTable.fnSettings().fnRecordsTotal();
+                            //console.log("total:" + iTotal);
+                            var iconStr = "";
+                            // kiểm tra position hiện tại của menu
+                            if (full.position <= 1) {
+                                full.position = 1;
+                                // nếu số lượng menu >1 thì : hiện nút dịch chuyển vị trí xuống, còn <=1 thì ko hiện button di chuyển 
+                                if (iTotal > 1) {
+                                    iconStr = " <i class='fas fa-angle-down' data-id='" + full.Id + "'></i>";
+                                }                             
+                            }
+                                // nếu position của menu hiện tại lớn hơn tổng số menu => set position = giá trị sau cùng ( lớn nhất ), hiện menu dịch chuyển lên
+                            else if (full.position >= iTotal) {
+                                full.position = iTotal;
+                                iconStr = " <i class='fas fa-angle-up' data-id='" + full.Id + "'></i>";
+                            } else
+                                // các trường hợp còn lại ( menu ở giữa, hiện cả nút dịch lên và xuống
+                            {
+                                iconStr = " <i class='fas fa-angle-up' data-id='" + full.Id + "'> </i> <i class='fas fa-angle-down' data-id='" + full.Id + "'></i>";
+                            }
+                            var result = " <input type='text' class='form-control' id='POSITION-" + full.Id + "' data-id='" + full.position + "' style='width:35px' value='" + full.position + "'> " + iconStr + "";
+                            return result;
+                        }
+
+                    },
+                    {
+                        "sName": "ActionEditAndDelete",
+                        "sWidth": "15%",
+                        "bSearchable": false,
+                        "bSortable": false,
+                        "sClass": "center",
+                        "mData": null,
+                        "mRender": function (data, type, full) {
+                            ////console.log(data);
+                            var result = "<a href='/Modules/Edit/" + full.Id + "'><i class='fa fa-edit text-warning'></i></a> <i id='del-" + full.Id + "' class='fa fa-times text-danger' ></i> ";
+
+                            return result;
+                        }
+                    },
+
+            ],
+            "preDrawCallback": function () {
+                // Initialize the responsive datatables helper once.
+                if (!responsiveHelperDtBasic) {
+                    responsiveHelperDtBasic = new ResponsiveDatatablesHelper($('#' + idOfDatatable), breakpointDefinition);
+                }
+            },
+            "rowCallback": function (nRow) {
+                responsiveHelperDtBasic.createExpandIcon(nRow);
+            },
+            "drawCallback": function (oSettings) {
+                responsiveHelperDtBasic.respond();
+            },
+            "bSort": false,
+            "iDisplayLength": 50,
+            "aLengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
+            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            
+                var oSettings = oTable.fnSettings();
+                var page = Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength);
+                var number = oSettings._iDisplayLength * page + iDisplayIndex + 1;
+                $('td:eq(0)', nRow).html(number);
+            },
+            "fnServerParams": function (aoData) {
+                var NAME = $("#NAME").val();
+                var dateFrom = $("#hddDateFrom").val();
+                var dateTo = $("#hddDateTo").val();
+                var tmp = { NAME: NAME, StartDate: dateFrom, EndDate: dateTo };
+                tmp = JSON.stringify(tmp);
+                ////console.log(tmp);
+                aoData.push({ "name": "ExtendCondition", "value": tmp });
+
+                //console.log(aoData);
+            }
+            //"fnInitComplete": function () {
+            //    //// modify table search input
+            //    //$('#' + idOfDatatable + '_wrapper .dataTables_filter input').addClass("form-control input-sm").attr("placeholder", "Search");
+            //    //// modify table per page dropdown
+            //    //$('#' + idOfDatatable + + '_wrapper .dataTables_length select').addClass("m-wrap small");
+            //    // initialzie select2 dropdown
+            //    //$('#' + idOfDatatable + '_wrapper .dataTables_length select').select2();
+            //    // modify tooltips
+            //    //if ($(".tooltips").length) {
+            //    //    $('.tooltips').tooltip();
+            //    //}
+            //},
+        });
+        $("#btnSearch").click(function () {
+            $('#' + idOfDatatable).dataTable().fnDraw();
+        });
+
+        var optionSet1 = {
+            startDate: moment().subtract(7, 'days'),
+            //startDate: moment("01-01-2016", ["MM-DD-YYYY", "YYYY-MM-DD"]).startOf('year'),
+            endDate: moment(),
+            minDate: moment().startOf('year'),
+            //minDate: moment("07-01-2016", ["MM-DD-YYYY", "YYYY-MM-DD"]).startOf('year'),
+            maxDate: moment().endOf('year'),
+            dateLimit: { days: 360 },
+            showDropdowns: true,
+            showWeekNumbers: true,
+            timePicker: false,
+            timePickerIncrement: 2,
+            timePicker12Hour: true,
+            ranges: {
+                'Hôm nay': [moment(), moment()],
+                'Hôm qua': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                '7 ngày trước': [moment().subtract(6, 'days'), moment()],
+                'Tháng này': [moment().startOf('month'), moment()],
+                'Tháng trước': [moment().subtract(1, 'month').startOf('month'), moment()],
+                'Năm này': [moment().startOf('year'), moment()],
+            },
+            opens: 'left',
+            buttonClasses: ['btn btn-default'],
+            applyClass: 'btn-small btn-primary',
+            cancelClass: 'btn-small',
+            format: 'DD/MM/YYYY',
+            separator: ' to ',
+            locale: {
+                applyLabel: 'Chọn',
+                cancelLabel: 'Thoát',
+                fromLabel: 'Từ',
+                toLabel: 'Đến',
+                customRangeLabel: 'Trong khoảng',
+                daysOfWeek: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+                monthNames: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+                firstDay: 1
+            }
+        };
+        // init default parameter
+        $('#DateRange').val(moment().format('DD/MM/YYYY') + ' - ' + moment().format('DD/MM/YYYY'));
+        $('#hddDateFrom').val(moment().subtract(7, 'days').format('MM/DD/YYYY'));
+        $('#hddDateTo').val(moment().format('MM/DD/YYYY'));
+        // callback
+        var cb = function (start, end) {
+            // re-display
+            $('#DateRange').val(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+            // re-init
+            $('#hddDateFrom').val(start.format('MM/DD/YYYY'));
+            $('#hddDateTo').val(end.format('MM/DD/YYYY'));
+        };
+        // init daterangepiker
+        $('#DateRange').daterangepicker(optionSet1, cb);
+    });
+</script>
+
+<!-- widget grid -->
+<section id="widget-grid" class="">
+
+
+    <!-- START ROW -->
+
+    <div class="row">
+
+        <!-- NEW COL START -->
+        <article class="col-sm-12 col-md-12">
+
+            <!-- Widget ID (each widget will need unique ID)-->
+            <div class="jarviswidget" id="wid-id-1" data-widget-editbutton="false" data-widget-custombutton="false">
+                <!-- widget options:
+                    usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+
+                    data-widget-colorbutton="false"
+                    data-widget-editbutton="false"
+                    data-widget-togglebutton="false"
+                    data-widget-deletebutton="false"
+                    data-widget-fullscreenbutton="false"
+                    data-widget-custombutton="false"
+                    data-widget-collapsed="true"
+                    data-widget-sortable="false"
+
+                -->
+                <header>
+                    <span class="widget-icon"> </span>
+                    <h2>Filter Form </h2>
+
+                </header>
+
+                <!-- widget div-->
+                <div>
+
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
+
+                    </div>
+                    <!-- end widget edit box -->
+                    <!-- widget content -->
+                    <div class="widget-body no-padding">
+                        <form id="checkout-form" class="smart-form" novalidate="novalidate">
+
+                            <fieldset>
+                                <div class="row">
+                                    <section class="col col-6">
+                                        <label class="input">
+                                            <i class="icon-prepend fa fa-info"></i>
+                                            <input type="text" id="NAME" placeholder="Modulename / Description ">
+                                        </label>
+                                    </section>
+                                </div>
+
+                                <div class="row">
+                                    <section class="col col-6">
+                                        <label class="input">
+                                            <i class="icon-append fa fa-calendar"></i>
+                                            <input type="text" name="DateRange" id="DateRange" placeholder="Choose date range" class="daterangepicker_input" data-dateformat='dd-mm-yyyy' title="Choose date range">
+                                        </label>
+                                    </section>
+
+                                    <input type="hidden" name="hddDateFrom" id="hddDateFrom" value="" />
+                                    <input type="hidden" name="hddDateTo" id="hddDateTo" value="" />
+
+                                </div>
+                            </fieldset>
+                            <footer>
+                                <button type="button" id="btnSearch" class="btn btn-primary">
+                                    Search
+                                </button>
+                            </footer>
+                        </form>
+
+                    </div>
+                    <!-- end widget content -->
+
+                </div>
+                <!-- end widget div -->
+
+            </div>
+            <!-- end widget -->
+            <!-- Widget ID (each widget will need unique ID)-->
+            <div class="jarviswidget" id="wid-id-2" data-widget-editbutton="false" data-widget-custombutton="false">
+                <!-- widget options:
+                    usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+
+                    data-widget-colorbutton="false"
+                    data-widget-editbutton="false"
+                    data-widget-togglebutton="false"
+                    data-widget-deletebutton="false"
+                    data-widget-fullscreenbutton="false"
+                    data-widget-custombutton="false"
+                    data-widget-collapsed="true"
+                    data-widget-sortable="false"
+
+                -->
+
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                    <h2><strong>Result data</strong> </h2>
+
+                </header>
+
+                <!-- widget div-->
+                <div>
+
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
+
+                    </div>
+                    <!-- end widget edit box -->
+                    <!-- widget content -->
+                    <div class="widget-body no-padding">
+                        <div class="widget-body-toolbar">
+                            <div class="row">
+                                <div class="col-xs-3 col-sm-7 col-md-7 col-lg-12 text-right">
+                                    <a class="btn btn-success" href="/Modules/Add">
+                                        <i class="fa fa-plus"></i> <span class="hidden-mobile">Add New Item</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+
+
+                            <table id="dt_basic" class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th><i class="fa fa-key text-warning"></i> ID</th>
+                                        <th>Module Name</th>
+                                        <th>Description</th>
+                                        <th>Status</th>
+                                        <th>Icon</th>
+                                        <th>Modified By</th>
+                                        <th>Modified Date</th>
+                                        <th>Position</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+
+                        </div>
+
+                    </div>
+                    <!-- end widget content -->
+
+                </div>
+                <!-- end widget div -->
+
+            </div>
+            <!-- end widget -->
+
+
+        </article>
+        <!-- END COL -->
+
+
+    </div>
+
+    <!-- END ROW -->
+
+</section>
+<!-- end widget grid -->

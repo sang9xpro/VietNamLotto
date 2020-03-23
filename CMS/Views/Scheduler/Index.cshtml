@@ -1,0 +1,608 @@
+﻿@model dynamic
+
+
+@{
+    ViewBag.Title = "Scheduler";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- PAGE RELATED PLUGIN(S) -->
+
+
+<link href="~/Content/DatetimePicker/css/daterangepicker.css" rel="stylesheet" />
+<script src="~/Content/js/plugin/datatables/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/jquery.dataTables.customize.js"></script>
+<script src="~/Content/js/plugin/datatables/dataTables.colVis.min.js"></script>
+<script src="~/Content/js/plugin/datatables/dataTables.tableTools.min.js"></script>
+<script src="~/Content/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
+<script src="~/Content/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
+<script src="~/Content/DataTables-1.10.4/extensions/Scroller/js/dataTables.scroller.js"></script>
+<link href="~/Content/DataTables-1.10.4/extensions/Scroller/css/dataTables.scroller.min.css" rel="stylesheet" />
+<script src="~/Scripts/select2.min.js"></script>
+<script src="~/Content/DatetimePicker/js/moment.min.js"></script>
+<script src="~/Content/DatetimePicker/js/daterangepicker.js"></script>
+<script src="~/Content/js/smartwidgets/jarvis.widget.min.js"></script>
+<script src="~/Scripts/woori-helper.js"></script>
+<script src="~/Scripts/woori-constants.js"></script>
+<!-- PAGE RELATED PLUGIN(S) -->
+<script src="~/Content/js/plugin/moment/moment.min.js"></script>
+<script src="~/Content/js/plugin/fullcalendar/jquery.fullcalendar.min.js"></script>
+
+<script type="text/javascript">
+
+		// DO NOT REMOVE : GLOBAL FUNCTIONS!
+
+		$(document).ready(function() {
+
+			pageSetUp();
+
+
+			    "use strict";
+
+			    var date = new Date();
+			    var d = date.getDate();
+			    var m = date.getMonth();
+			    var y = date.getFullYear();
+
+			    var hdr = {
+			        left: 'title',
+			        center: 'month,agendaWeek,agendaDay',
+			        right: 'prev,today,next'
+			    };
+
+			    var initDrag = function (e) {
+			        // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
+			        // it doesn't need to have a start or end
+
+			        var eventObject = {
+			            title: $.trim(e.children().text()), // use the element's text as the event title
+			            description: $.trim(e.children('span').attr('data-description')),
+			            icon: $.trim(e.children('span').attr('data-icon')),
+			            customerId: $.trim(e.children('span').attr('data-customerId')),
+			            meetingLocation: $.trim(e.children('span').attr('data-meetingLocation')),
+			            staffId: $.trim(e.children('span').attr('data-staffId')),
+			            className: $.trim(e.children('span').attr('class')),
+			            ID: "0",
+                        idUpdate:"0"
+			            // use the element's children as the event class
+			        };
+			        // store the Event Object in the DOM element so we can get to it later
+			        e.data('eventObject', eventObject);
+
+			        // make the event draggable using jQuery UI
+			        e.draggable({
+			            zIndex: 999,
+			            revert: true, // will cause the event to go back to its
+			            revertDuration: 0 //  original position after the drag
+			        });
+			    };
+
+			    var addEvent = function (title, priority, description, icon, customerId,staffId, meetingLocation,ID,idUpdate) {
+			        title = title.length === 0 ? "Untitled Event" : title;
+			        description = description.length === 0 ? "No Description" : description;
+			        icon = icon.length === 0 ? " " : icon;
+			        priority = priority.length === 0 ? "label label-default" : priority;
+			        customerId = customerId.length === 0 ? "Unknown" : customerId;
+			        staffId = staffId.length === 0 ? "Unknown" : staffId;
+			        meetingLocation = meetingLocation.length === 0 ? "Unknown Location" : meetingLocation;
+			        ID = ID.length === 0 ? "Unknown" : ID;
+			        idUpdate = idUpdate.length === 0 ? "Unknown" : idUpdate;
+			        var html = $('<li><span class="' + priority + '" data-description="' + description + '"  data-staffId="' + staffId + '"  data-customerId="' + customerId + '" data-meetingLocation="' + meetingLocation + '" data-ID="' + ID + '" data-idUpdate="' + idUpdate + '" data-icon="' + icon + '">' + title + '</span></li>').prependTo('ul#external-events').hide().fadeIn();
+
+			        $("#event-container").effect("highlight", 800);
+
+			        initDrag(html);
+			    };
+
+			    /* initialize the external events
+				 -----------------------------------------------------------------*/
+
+			    $('#external-events > li').each(function () {
+			        initDrag($(this));
+			    });
+
+			    $('#add-event').click(function () {
+			        var title = $('#title').val(),
+			            priority = $('input:radio[name=priority]:checked').val(),
+			            description = $('#description').val(),
+			            icon = $('input:radio[name=iconselect]:checked').val();
+			        customerId = $('#customerId').val();
+			        staffId = $('#StaffId option:selected').val();
+			        meetingLocation = $('#location').val();
+			       
+			        addEvent(title, priority, description, icon, customerId,staffId, meetingLocation,"0","0");
+			    });
+
+			    /* initialize the calendar
+				 -----------------------------------------------------------------*/
+
+			var calendar=    $('#calendar').fullCalendar({
+
+			        header: hdr,
+			        editable: true,
+			        droppable: true, // this allows things to be dropped onto the calendar !!!
+
+			        drop: function (date, allDay) { // this function is called when something is dropped
+
+			            // retrieve the dropped element's stored Event Object
+			            var originalEventObject = $(this).data('eventObject');
+
+			            // we need to copy it, so that multiple events don't have a reference to the same object
+			            var copiedEventObject = $.extend({}, originalEventObject);
+
+			            // assign it the date that was reported
+			            copiedEventObject.start = date;
+			            copiedEventObject.allDay = allDay;
+
+			            // render the event on the calendar
+			            // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
+			            $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
+
+
+
+			            // is the "remove after drop" checkbox checked?
+			            if ($('#drop-remove').is(':checked')) {
+			                // if so, remove the element from the "Draggable Events" list
+			                $(this).remove();
+			            }
+
+			        },
+
+			        select: function (start, end, allDay) {
+
+			            var title = prompt('Event Title:');
+			            if (title) {
+			                calendar.fullCalendar('renderEvent', {
+			                        title: title,
+			                        start: start,
+			                        end: end,
+			                        allDay: allDay
+			                    }, true // make the event "stick"
+			                );
+			            }
+			            calendar.fullCalendar('unselect');
+			        },
+
+			        events: '@Url.RouteUrl(new { action = "GetEvents", controller = "Scheduler", id=Model.ID })'
+                        //[
+                    //    {
+                    //    id: 1,
+			        //    title: 'All Day Event',
+			        //    start: new Date(y, m, 1),
+			        //    description: 'long description',
+			        //    className: ["event", "bg-color-greenLight"],
+			        //    icon: 'fa-check'
+			        //}, {
+			        //    title: 'Long Event',
+			        //    start: new Date(y, m, d - 5),
+			        //    end: new Date(y, m, d - 2),
+			        //    className: ["event", "bg-color-red"],
+			        //    icon: 'fa-lock'
+			        //}, {
+			        //    id: 999,
+			        //    title: 'Repeating Event',
+			        //    start: new Date(y, m, d - 3, 16, 0),
+			        //    allDay: false,
+			        //    className: ["event", "bg-color-blue"],
+			        //    icon: 'fa-clock-o'
+			        //}, {
+			        //    id: 999,
+			        //    title: 'Repeating Event',
+			        //    start: new Date(y, m, d + 4, 16, 0),
+			        //    allDay: false,
+			        //    className: ["event", "bg-color-blue"],
+			        //    icon: 'fa-clock-o'
+			        //}, {
+			        //    title: 'Meeting',
+			        //    start: new Date(y, m, d, 10, 30),
+			        //    allDay: false,
+			        //    className: ["event", "bg-color-darken"]
+			        //}, {
+			        //    title: 'Lunch',
+			        //    start: new Date(y, m, d, 12, 0),
+			        //    end: new Date(y, m, d, 14, 0),
+			        //    allDay: false,
+			        //    className: ["event", "bg-color-darken"]
+			        //}, {
+			        //    title: 'Birthday Party',
+			        //    start: new Date(y, m, d + 1, 19, 0),
+			        //    end: new Date(y, m, d + 1, 22, 30),
+			        //    allDay: false,
+			        //    className: ["event", "bg-color-darken"]
+			        //}, {
+			        //    title: 'Smartadmin Open Day',
+			        //    start: new Date(y, m, 28),
+			        //    end: new Date(y, m, 29),
+			        //    className: ["event", "bg-color-darken"]
+			        //}
+			        //]
+                    ,
+
+			        eventRender: function (event, element, icon) {
+			            if (!event.description == "") {
+			                element.find('.fc-title').append("<br/><span class='ultra-light'>" + event.description +
+			                    "</span>");
+			            }
+			            if (!event.icon == "") {
+			                element.find('.fc-title').append("<i class='air air-top-right fa " + event.icon +
+			                    " '></i>");
+			            }
+			        },
+
+			        windowResize: function (event, ui) {
+			            $('#calendar').fullCalendar('render');
+			        }
+			    });
+
+			    /* hide default buttons */
+			    $('.fc-right, .fc-center').hide();
+
+
+			    $('#calendar-buttons #btn-prev').click(function () {
+			        console.log(calendar);
+				    $('.fc-prev-button').click();
+				    return false;
+				});
+
+				$('#calendar-buttons #btn-next').click(function () {
+				    $('.fc-next-button').click();
+				    return false;
+				});
+
+				$('#calendar-buttons #btn-today').click(function () {
+				    $('.fc-today-button').click();
+				    return false;
+				});
+
+				$('#mt').click(function () {
+				    $('#calendar').fullCalendar('changeView', 'month');
+				});
+
+				$('#ag').click(function () {
+				    $('#calendar').fullCalendar('changeView', 'agendaWeek');
+				});
+
+				$('#td').click(function () {
+				    $('#calendar').fullCalendar('changeView', 'agendaDay');
+				});
+				$.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+				    _title: function (title) {
+				        if (!this.options.title) {
+				            title.html("&#160;");
+				        } else {
+				            title.html(this.options.title);
+				        }
+				    }
+				}));
+
+
+		    /*
+			* DIALOG SIMPLE
+			*/
+
+		    // Dialog click
+
+
+				$('#dialog_simple').dialog({
+				    autoOpen: false,
+				    width: 600,
+				    resizable: false,
+				    modal: true,
+				    title: "<div class='widget-header'><h4><i class='fa fa-warning'></i> Information of updating log.</h4></div>",
+				    buttons: [ {
+				        html: "<i class='fa fa-times'></i>&nbsp; Cancel",
+				        "class": "btn btn-default",
+				        click: function () {
+				            $(this).dialog("close");
+				        }
+				    }]
+				});
+
+				$("#SubmitScheduler").click(function () {
+				    console.log($("#title").val());
+				    console.log($("#customerId").val());
+				   console.log($("#StaffId option:selected").val());
+				   console.log($("#location").val());
+				   console.log($("#description").val());
+				   console.log($("input[name='priority']:checked").val());
+				   var listEvent = $('#calendar').fullCalendar('clientEvents');
+				   var list = {"events":[]};
+				   listEvent.forEach(function (item) {
+				       console.log(item);
+				       var jsonObj = {
+				           ID: item.ID,
+				           idUpdate: item.idUpdate,
+				           className: item.className,
+				           customerId: item.customerId,
+                           staffId:item.staffId,
+				           description: item.description,
+				           title: item.title,
+				           meetingLocation: item.meetingLocation,
+				           start: item.start,
+				           end: item.end,
+                           icon: item.icon
+				       };
+				       list.events.push(jsonObj);
+				   });
+				   console.log("list");
+				   console.log(list);
+				   var res = JSON.stringify(list);
+				    $.ajaxSettings.traditional = true;
+				    $.ajax({
+				        type: 'POST',
+				        url: '@Url.Action("UpdateSchedule")',
+				        contentType: 'application/json; charset=utf-8',
+				        data: JSON.stringify({
+				            list: res
+				        }),
+				        dataType: 'json',
+				        success: function (object) {
+				            var message = object.data;
+				            if (message == "" || message == "You did not change anything!") {
+				                $("#dialog_simple").html("You did not change anything!");
+				                $('#dialog_simple').dialog('open');
+
+				            } else {
+				                $("#dialog_simple").html(message);
+				                $('#dialog_simple').dialog('open');
+				                $("#SubmitScheduler").attr("disabled", "disabled");
+				            }
+
+				            return false;
+
+				        }
+				    });
+
+				});
+		})
+
+</script>
+
+
+    <div class="row">
+
+        <div class="col-sm-12 col-md-12 col-lg-3">
+            <!-- new widget -->
+            <div class="jarviswidget jarviswidget-color-blueDark">
+                <header>
+                    <h2> Add Events </h2>
+                </header>
+
+                <!-- widget div-->
+                <div>
+
+                    <div class="widget-body">
+                        <!-- content goes here -->
+
+                        <form id="add-event-form">
+                            <fieldset>
+
+                                <div class="form-group">
+                                    <label>Select Event Icon</label>
+                                    <div class="btn-group btn-group-sm btn-group-justified" data-toggle="buttons">
+                                        <label class="btn btn-default active">
+                                            <input type="radio" name="iconselect" id="icon-1" value="fa-info" checked>
+                                            <i class="fa fa-info text-muted"></i>
+                                        </label>
+                                        <label class="btn btn-default">
+                                            <input type="radio" name="iconselect" id="icon-2" value="fa-warning">
+                                            <i class="fa fa-warning text-muted"></i>
+                                        </label>
+                                        <label class="btn btn-default">
+                                            <input type="radio" name="iconselect" id="icon-3" value="fa-check">
+                                            <i class="fa fa-check text-muted"></i>
+                                        </label>
+                                        <label class="btn btn-default">
+                                            <input type="radio" name="iconselect" id="icon-4" value="fa-user">
+                                            <i class="fa fa-user text-muted"></i>
+                                        </label>
+                                        <label class="btn btn-default">
+                                            <input type="radio" name="iconselect" id="icon-5" value="fa-lock">
+                                            <i class="fa fa-lock text-muted"></i>
+                                        </label>
+                                        <label class="btn btn-default">
+                                            <input type="radio" name="iconselect" id="icon-6" value="fa-clock-o">
+                                            <i class="fa fa-clock-o text-muted"></i>
+                                        </label>
+                                    </div>
+                                </div>
+                                <!-- ui-dialog -->
+                                <div id="dialog_simple" title="Dialog update schedule">
+                                   
+                                </div>
+                                <div class="form-group">
+                                    <label>Event Title</label>
+                                    <input class="form-control" id="title" name="title" maxlength="40" type="text" placeholder="Event Title" value="Meeting with customer @Model.Name">
+                                </div>
+                                <div class="form-group">
+                                    <label>Customer Name</label>
+                                    <input class="form-control" id="customerName" name="title" maxlength="100" type="text" placeholder="" value="@Model.Name" disabled>
+                                    <input class="form-control" id="customerId" name="title" maxlength="100" type="hidden" placeholder="" value="@Model.IdNumber" >
+                                </div>
+                                <div class="form-group">
+                                    <label>Select Agent In Charge *</label>
+                                        <select class="select2" data-select-search="true" id="StaffId">
+                                            <option value="0">-- Select agent in charge --</option>
+                                            @{
+                                                foreach (var item in ViewBag.listStaff)
+                                                {
+                                                    var strNameUser = "";
+                                                    var strConcat = "";
+                                                    if (item.Name != null)
+                                                    {
+                                                        strNameUser += "Fullname:" + item.Name;
+                                                        strConcat = " - ";
+                                                    }
+                                                    if (item.Username != null)
+                                                    {
+
+                                                        strNameUser += strConcat + "Username:" + item.Username;
+                                                    }
+                                                  
+                                                    <option value="@item.Username">@strNameUser</option>
+                                                }
+                                            }
+                                        </select>
+                                 
+                                </div>
+                                <div class="form-group">
+                                    <label>Meeting location</label>
+                                    <input class="form-control" id="location" name="title" maxlength="40" type="text" placeholder="Enter the meeting address here" value="@Model.Address">
+                                </div>
+                                <div class="form-group">
+                                    <label>Event Description</label>
+                                    <textarea class="form-control" placeholder="Please be brief" rows="3" maxlength="400" id="description"></textarea>
+                                    <p class="note">Maxlength is set to 400 characters</p>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Select Event Color</label>
+                                    <div class="btn-group btn-group-justified btn-select-tick" data-toggle="buttons">
+                                        <label class="btn bg-color-darken active">
+                                            <input type="radio" name="priority" id="option1" value="bg-color-darken txt-color-white" checked>
+                                            <i class="fa fa-check txt-color-white"> 1</i>
+                                        </label>
+                                        <label class="btn bg-color-blue">
+                                            <input type="radio" name="priority" id="option2" value="bg-color-blue txt-color-white">
+                                            <i class="fa fa-check txt-color-white"> 2</i>
+                                        </label>
+                                        <label class="btn bg-color-orange">
+                                            <input type="radio" name="priority" id="option3" value="bg-color-orange txt-color-white">
+                                            <i class="fa fa-check txt-color-white"> 3</i>
+                                        </label>
+                                        <label class="btn bg-color-greenLight">
+                                            <input type="radio" name="priority" id="option4" value="bg-color-greenLight txt-color-white">
+                                            <i class="fa fa-check txt-color-white"> 4</i>
+                                        </label>
+                                        <label class="btn bg-color-blueLight">
+                                            <input type="radio" name="priority" id="option5" value="bg-color-blueLight txt-color-white">
+                                            <i class="fa fa-check txt-color-white"> 5</i>
+                                        </label>
+                                        <label class="btn bg-color-red">
+                                            <input type="radio" name="priority" id="option6" value="bg-color-red txt-color-white">
+                                            <i class="fa fa-check txt-color-white"> 6</i>
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </fieldset>
+                            <div class="form-actions">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button class="btn btn-default" type="button" id="add-event">
+                                            Add Event
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- end content -->
+                    </div>
+
+                </div>
+                <!-- end widget div -->
+            </div>
+            <!-- end widget -->
+
+            <div class="well well-sm" id="event-container">
+                <form>
+                    <fieldset>
+                        <legend>
+                            Draggable Events
+                        </legend>
+                        <ul id='external-events' class="list-unstyled">
+                            @*<li>
+                                <span class="bg-color-darken txt-color-white" data-description="Currently busy" data-icon="fa-time">Office Meeting</span>
+                            </li>
+                            <li>
+                                <span class="bg-color-blue txt-color-white" data-description="No Description" data-icon="fa-pie">Lunch Break</span>
+                            </li>
+                            <li>
+                                <span class="bg-color-red txt-color-white" data-description="Urgent Tasks" data-icon="fa-alert">URGENT</span>
+                            </li>*@
+                        </ul>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="drop-remove" class="checkbox style-0" checked="checked">
+                                <span>remove after drop</span>
+                            </label>
+
+                        </div>
+                    </fieldset>
+                </form>
+
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-9">
+
+            <!-- new widget -->
+            <div class="jarviswidget jarviswidget-color-blueDark">
+
+                <!-- widget options:
+                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+
+                data-widget-colorbutton="false"
+                data-widget-editbutton="false"
+                data-widget-togglebutton="false"
+                data-widget-deletebutton="false"
+                data-widget-fullscreenbutton="false"
+                data-widget-custombutton="false"
+                data-widget-collapsed="true"
+                data-widget-sortable="false"
+
+                -->
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-calendar"></i> </span>
+                    <h2> My Events </h2>
+                    <div class="widget-toolbar">
+                        <!-- add: non-hidden - to disable auto hide -->
+                        <div class="btn-group">
+                            <button class="btn dropdown-toggle btn-xs btn-default" data-toggle="dropdown">
+                                Showing <i class="fa fa-caret-down"></i>
+                            </button>
+                            <ul class="dropdown-menu js-status-update pull-right">
+                                <li>
+                                    <a href="javascript:void(0);" id="mt">Month</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);" id="ag">Agenda</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);" id="td">Today</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- widget div-->
+                <div>
+
+                    <div class="widget-body no-padding">
+                        <!-- content goes here -->
+                        <div class="widget-body-toolbar">
+                             <button class="btn btn-warning" value="Submit" id="SubmitScheduler" style="margin-left:100px;float:none">Submit</button>
+                            <div id="calendar-buttons">
+
+                                <div class="btn-group">
+                                    <a href="javascript:void(0)" class="btn btn-default btn-xs" id="btn-prev"><i class="fa fa-chevron-left"></i></a>
+                                    <a href="javascript:void(0)" class="btn btn-default btn-xs" id="btn-next"><i class="fa fa-chevron-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="calendar"></div>
+
+                        <!-- end content -->
+                    </div>
+
+                </div>
+                <!-- end widget div -->
+            </div>
+            <!-- end widget -->
+
+        </div>
+
+    </div>
+
+    <!-- end row -->
+

@@ -1,0 +1,84 @@
+2020-03-17 08:49:32,342 INFO CMS.Controllers.LoginController - logon
+2020-03-17 08:51:11,470 INFO CMS.Controllers.LoginController - logon
+2020-03-17 08:53:45,551 INFO CMS.Controllers.LoginController - logon
+2020-03-17 08:54:01,253 INFO CMS.Controllers.LoginController - logon
+2020-03-17 08:55:36,402 INFO CMS.Controllers.LoginController - logon
+2020-03-17 09:09:53,760 INFO CMS.Controllers.LoginController - logon
+2020-03-17 11:05:23,888 INFO CMS.Controllers.LoginController - logon
+2020-03-17 11:14:21,609 INFO CMS.Controllers.LoginController - logon
+2020-03-17 11:15:14,494 INFO CMS.Controllers.LoginController - logon
+2020-03-17 11:21:58,107 ERROR CMS.Controllers.SchedulerController - ERROR:An element with the same key 'DocumentStatus' already exists in the ExpandoObject.
+System.ArgumentException: An element with the same key 'DocumentStatus' already exists in the ExpandoObject.
+   at System.Dynamic.ExpandoObject.TrySetValue(Object indexClass, Int32 index, Object value, String name, Boolean ignoreCase, Boolean add)
+   at System.Dynamic.ExpandoObject.TryAddMember(String key, Object value)
+   at System.Dynamic.ExpandoObject.System.Collections.Generic.IDictionary<System.String,System.Object>.Add(String key, Object value)
+   at BusinessDatabase.CommonObj.HelperBo.SelectWhere(String attr, String tablename, String whereclause, String limitclause) in D:\Projects\FileUploadServer\BusinessDatabase\BussinessObj\HelperBo.cs:line 247
+2020-03-17 11:23:47,590 ERROR CMS.Controllers.SchedulerController - ERROR:Data too long for column 'p_attr' at row 1
+MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'p_attr' at row 1
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader()
+   at BusinessDatabase.CommonObj.HelperBo.SelectWhere(String attr, String tablename, String whereclause, String limitclause) in D:\Projects\FileUploadServer\BusinessDatabase\BussinessObj\HelperBo.cs:line 236
+2020-03-17 11:24:05,600 ERROR CMS.Controllers.SchedulerController - ERROR:An element with the same key 'StaffId' already exists in the ExpandoObject.
+System.ArgumentException: An element with the same key 'StaffId' already exists in the ExpandoObject.
+   at System.Dynamic.ExpandoObject.TrySetValue(Object indexClass, Int32 index, Object value, String name, Boolean ignoreCase, Boolean add)
+   at System.Dynamic.ExpandoObject.TryAddMember(String key, Object value)
+   at System.Dynamic.ExpandoObject.System.Collections.Generic.IDictionary<System.String,System.Object>.Add(String key, Object value)
+   at BusinessDatabase.CommonObj.HelperBo.SelectWhere(String attr, String tablename, String whereclause, String limitclause) in D:\Projects\FileUploadServer\BusinessDatabase\BussinessObj\HelperBo.cs:line 247
+2020-03-17 13:14:03,388 INFO CMS.Controllers.LoginController - logon
+2020-03-17 14:16:55,240 INFO CMS.Controllers.LoginController - logon
+2020-03-17 14:28:16,050 INFO CMS.Controllers.LoginController - logon
+2020-03-17 14:56:26,809 ERROR CMS.Controllers.SchedulerController - ERROR:You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FROM scheduler a left join customers b on a.CustomerId = b.ID  WHERE 1=1     AND' at line 1
+MySql.Data.MySqlClient.MySqlException (0x80004005): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FROM scheduler a left join customers b on a.CustomerId = b.ID  WHERE 1=1     AND' at line 1
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader()
+   at BusinessDatabase.CommonObj.HelperBo.SelectWhere(String attr, String tablename, String whereclause, String limitclause) in D:\Projects\FileUploadServer\BusinessDatabase\BussinessObj\HelperBo.cs:line 236
+2020-03-17 14:56:55,482 ERROR CMS.Controllers.SchedulerController - ERROR:You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FROM scheduler a left join customers b on a.CustomerId = b.ID  WHERE 1=1     AND' at line 1
+MySql.Data.MySqlClient.MySqlException (0x80004005): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FROM scheduler a left join customers b on a.CustomerId = b.ID  WHERE 1=1     AND' at line 1
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader()
+   at BusinessDatabase.CommonObj.HelperBo.SelectWhere(String attr, String tablename, String whereclause, String limitclause) in D:\Projects\FileUploadServer\BusinessDatabase\BussinessObj\HelperBo.cs:line 236
+2020-03-17 15:05:04,160 ERROR CMS.Controllers.SchedulerController - ERROR:You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FROM scheduler a left join customers b on a.CustomerId = b.ID, customers d left ' at line 1
+MySql.Data.MySqlClient.MySqlException (0x80004005): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FROM scheduler a left join customers b on a.CustomerId = b.ID, customers d left ' at line 1
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader()
+   at BusinessDatabase.CommonObj.HelperBo.SelectWhere(String attr, String tablename, String whereclause, String limitclause) in D:\Projects\FileUploadServer\BusinessDatabase\BussinessObj\HelperBo.cs:line 236
+2020-03-17 15:15:08,220 ERROR CMS.Controllers.SchedulerController - ERROR:Not unique table/alias: 'b'
+MySql.Data.MySqlClient.MySqlException (0x80004005): Not unique table/alias: 'b'
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader()
+   at BusinessDatabase.CommonObj.HelperBo.SelectWhere(String attr, String tablename, String whereclause, String limitclause) in D:\Projects\FileUploadServer\BusinessDatabase\BussinessObj\HelperBo.cs:line 236
+2020-03-17 15:21:03,576 ERROR CMS.Controllers.SchedulerController - ERROR:You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'b.DocumentStatus=c.ID and a.CustomerId=b.ID ORDER BY a.MeetingEndDate DESC  LIMI' at line 1
+MySql.Data.MySqlClient.MySqlException (0x80004005): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'b.DocumentStatus=c.ID and a.CustomerId=b.ID ORDER BY a.MeetingEndDate DESC  LIMI' at line 1
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader()
+   at BusinessDatabase.CommonObj.HelperBo.SelectWhere(String attr, String tablename, String whereclause, String limitclause) in D:\Projects\FileUploadServer\BusinessDatabase\BussinessObj\HelperBo.cs:line 236
