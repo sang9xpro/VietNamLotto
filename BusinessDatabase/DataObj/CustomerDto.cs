@@ -9,17 +9,22 @@ namespace BusinessDatabase.DataObj
     public class CustomerDto
     {
         public int ID { get; set; }
-        public string Name { get; set; }
-        public string IdNumber { get; set; }
-        public string CIF { get; set; }
-        public string StaffId { get; set; }
-        public string UrlPath { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Address { get; set; }
+        public string NAME { get; set; }
+        public string AGE { get; set; }
+        public string ADDRESS { get; set; }
+        public string NUMBER_PHONE { get; set; }
+        public string TYPE { get; set; }
 
-        public string ModifiedDate { get; set; }
-        public string ModifiedBy { get; set; }
-        public string DocumentStatus { get; set; }
-        public string DocumentStatusDate { get; set; }
+        private List<ContractDto> list;
+
+        public List<ContractDto> GetList()
+        {
+            return list;
+        }
+
+        public void SetList(List<ContractDto> value)
+        {
+            list = value;
+        }
     }
 }

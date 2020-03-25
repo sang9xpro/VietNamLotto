@@ -1,0 +1,16 @@
+2020-03-24 09:15:20,229 INFO CMS.Controllers.LoginController - logon
+2020-03-24 15:51:18,922 INFO CMS.Controllers.LoginController - logon
+2020-03-24 15:51:24,925 INFO CMS.Controllers.LoginController - logon
+2020-03-24 15:53:54,143 ERROR CMS.Controllers.DailyController - ERROR:Table 'VietNamLotto.customers' doesn't exist
+MySql.Data.MySqlClient.MySqlException (0x80004005): Table 'VietNamLotto.customers' doesn't exist
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader()
+   at BusinessDatabase.CommonObj.HelperBo.SelectWhere(String attr, String tablename, String whereclause, String limitclause) in C:\Users\Admin\source\repos\FileUploadServer\BusinessDatabase\BussinessObj\HelperBo.cs:line 236
+2020-03-24 16:01:54,903 INFO CMS.Controllers.LoginController - logon
+2020-03-24 16:02:01,406 INFO CMS.Controllers.LoginController - logon
+2020-03-24 17:30:32,368 INFO CMS.Controllers.LoginController - logon

@@ -309,7 +309,7 @@ namespace CMS.Controllers
                                 };
 
                                 helperBo.UpdateWhere("customers", customerDto, "ID=" + customer.ID);
-                                var obj = new DocumentStatusLogDto()
+                                var obj = new ContractDto()
                                 {
                                     CustomerID = customer.ID.ToString(),
                                     OldStatus = 1,

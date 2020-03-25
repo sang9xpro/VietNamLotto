@@ -16,21 +16,16 @@ using Utilities;
 namespace CMS.Controllers
 {
    
-    public class CustomerController : BasicController
+    public class DailyController : BasicController
     {
         public string tableName = "customers";
-        private readonly ILog _log = LogManager.GetLogger(typeof(CustomerController));
+        private readonly ILog _log = LogManager.GetLogger(typeof(DailyController));
 
         //
         // GET: /User/
         public ActionResult Index()
         {
             var helperBo = new HelperBo();
-           var listStatus= helperBo.SelectWhere(null, "documentstatusdetail", null, null);
-            if (listStatus.success)
-            {
-                ViewBag.listStatus = listStatus.data;
-            }
             return View();
         }
 
@@ -138,18 +133,44 @@ namespace CMS.Controllers
         public ActionResult Add()
         {
             var helperBo = new HelperBo();
-            var acc = Session["Account"];
-            var curUser = new UserDto();
-            if (acc != null)
+            // tìm danh sách khách hàng
+            var listCustomers = helperBo.SelectWhere(null, "customer",null, null);
+            var list = new List<CustomerDto>();
+            if(listCustomers.success && listCustomers.data.Count > 0)
             {
-                curUser = (UserDto)acc;
-            }
-            ViewBag.StaffId = curUser.Username;
-            var listStaff= helperBo.SelectWhere(null, "users",null, null);
-            dynamic list =null;
-            if (listStaff.success)
-            {
-                list = listStaff.data;
+                // tìm tích kê theo của từng khách hàng
+                var curDate = DateUtils.FormatYYYYMMDD(DateTime.Now.ToShortDateString());
+                foreach(var customer in listCustomers.data)
+                {
+                    var c = new CustomerDto();
+                    c.ID = customer.ID;
+                    c.NAME = customer.NAME;
+                    c.NUMBER_PHONE = customer.NUMBER_PHONE;
+                    c.TYPE = customer.TYPE;
+                    c.AGE = customer.AGE.ToString();
+                    c.ADDRESS = customer.ADDRESS;
+
+                  var listTichKe= helperBo.SelectWhere(null, "contract", "DATE>='"+ curDate + "' and CUSTOMER_ID="+customer.ID, null);
+                    if (listTichKe.success && listTichKe.data.Count>0)
+                    {
+                        List<ContractDto> listContract = new List<ContractDto>();
+                        foreach(var contract in listTichKe.data)
+                        {
+                            var Contract = new ContractDto()
+                            {
+                                CUSTOMER_ID=contract.CUSTOMER_ID,
+                                DATE=contract.DATE,
+                                ID=contract.ID,
+                                PRODUCT_ID=contract.PRODUCT_ID,
+                                RATIO=contract.RATIO,
+                                TYPE=contract.TYPE
+                            };
+                            listContract.Add(Contract);
+                        }
+                        c.SetList(listContract);
+                        list.Add(c);
+                    }
+                }
             }
             return View(list);
         }

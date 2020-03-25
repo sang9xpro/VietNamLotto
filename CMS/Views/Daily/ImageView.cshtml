@@ -1,0 +1,280 @@
+﻿@model BusinessDatabase.DataObj.CustomerDto
+@{
+    ViewBag.Title = "ImageView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<script type="text/javascript">
+
+        $(document).ready(function () {
+            pageSetUp();
+            $(document).on("click", "input[name='radio-inline']", function () {
+                console.log("change input");
+                console.log($(this).val());
+                var val = $(this).val();
+                if (val == "5") {
+                   
+                    $("#DocumentStatusSelectBox").show();
+                } else {
+                    $("#DocumentStatusSelectBox").hide();
+                }
+            });
+            $("#Submit").click(function () {
+              
+                console.log($("input[name='radio-inline']:selected").val());
+                console.log(initializeDuallistbox);
+                console.log(initializeDuallistbox.val());
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("ChangeDocumentStatus")',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify({
+                        ID: '@Model.ID',
+                        DocumentStatus: $("input[name='radio-inline']:checked").val(),
+                        Recruiter: initializeDuallistbox.val()
+                    }),
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data);
+                            $("#resultWidget").html('<div class="alert alert-success fade in"><button class="close" data-dismiss="alert">×</button><i class="fa-fw fa fa-check"></i><strong>Success!</strong> ' + data.isSuccess + '.</div>');
+                            setTimeout(function () { location.href = "@Url.Action("Index")"; }, 5000);
+                    }
+                });
+                console.log("clicked");
+
+            });
+
+            var initializeDuallistbox = $('#initializeDuallistbox').bootstrapDualListbox({
+                nonSelectedListLabel: 'Non-selected Recruiter',
+                selectedListLabel: 'Selected Recruiter',
+                preserveSelectionOnMove: 'moved',
+                moveOnSelect: false,
+                nonSelectedFilter: ''
+            });
+        });
+    </script>
+<!-- row -->
+<fieldset>
+    @{       
+        if (Model.DocumentStatus == "2")
+        {
+            <section>
+                <label class="label KYCLabel">Verify KYC of this document:</label>
+                <div class="inline-group">
+                    <label class="radio KYCradio">
+                        <input type="radio" name="radio-inline" value="2" checked="checked">
+                        <i class="fa-fw fa fa-cube"></i>Document Received. Wait for KYC verifying.
+                    </label>
+                    <label class="radio KYCradio">
+                        <input type="radio" name="radio-inline" value="3">
+                        <i class="fa-fw fa fa-times"></i>Rejected. Need additional documents.
+                    </label>
+                    <label class="radio KYCradio">
+                        <input type="radio" name="radio-inline" value="4">
+                        <i class="fa-fw fa fa-times"></i>Failed. Documents refuse
+                    </label>
+                    <label class="radio KYCradio">
+                        <input type="radio" name="radio-inline" value="5">
+                        <i class="fa-fw fa fa-check"></i>Finished.
+                    </label>
+                </div>
+            </section>
+           
+
+                if (ViewBag.listStaff != null)
+                {
+            <section id="DocumentStatusSelectBox" style="display:none;">
+                <div class="widget-body col-md-5">
+                    <select multiple="multiple" size="10" name="duallistbox_demo2" id="initializeDuallistbox">
+                       @{
+                           foreach (var item in ViewBag.listStaff)
+                           {
+                            <option value="@item.Username">@item.Name - @item.Username</option>
+                           }
+                    }
+                    </select>
+
+                </div>
+            </section>
+                 }
+           
+            <section class="col-md-12" style="padding:10px">
+                <button class="btn btn-success" value="Submit" id="Submit" style="">Submit</button>
+            </section>
+        }
+        else if (Model.DocumentStatus == "3")
+        {
+            <section>
+                <label class="label KYCLabel">Verify KYC of this document:</label>
+                <div class="inline-group">
+                    <label class="radio KYCradio">
+                        <input type="radio" name="radio-inline" value="2" >
+                        <i class="fa-fw fa fa-cube"></i>Document Received. Wait for KYC verifying.
+                    </label>
+                    <label class="radio KYCradio">
+                        <input type="radio" name="radio-inline" value="3" checked="checked">
+                        <i class="fa-fw fa fa-times"></i>Rejected. Need additional documents.
+                    </label>
+                    <label class="radio KYCradio">
+                        <input type="radio" name="radio-inline" value="4">
+                        <i class="fa-fw fa fa-times"></i>Failed. Documents refuse
+                    </label>
+                    <label class="radio KYCradio">
+                        <input type="radio" name="radio-inline" value="5">
+                        <i class="fa-fw fa fa-check"></i>Finished.
+                    </label>
+                </div>
+            </section>
+            if (ViewBag.listStaff != null)
+            {
+            <section id="DocumentStatusSelectBox" style="display:none;">
+                <div class="widget-body col-md-5">
+                    <select multiple="multiple" size="10" name="duallistbox_demo2" id="initializeDuallistbox">
+                        @{
+                            foreach (var item in ViewBag.listStaff)
+                            {
+                                <option value="@item.Username">@item.Name - @item.Username</option>
+                            }
+                        }
+                    </select>
+
+                </div>
+            </section>
+            }
+
+            <section class="col-md-12" style="padding:10px">
+                <button class="btn btn-success" value="Submit" id="Submit" style="">Submit</button>
+            </section>
+        }
+        else
+        {
+            if (Model.DocumentStatus == "1" || Model.DocumentStatus == "6")
+            {
+                <div class="alert alert-warning fade in">
+                    <button class="close" data-dismiss="alert">
+                        ×
+                    </button>
+                    <i class="fa-fw fa fa-warning"></i>
+                    <strong>Warning</strong> This customer document is empty. Check for uploading from agent first! 
+                </div>
+            }
+            else if (Model.DocumentStatus == "5")
+            {
+                <div class="alert alert-success fade in">
+                    <button class="close" data-dismiss="alert">
+                        ×
+                    </button>
+                    <i class="fa-fw fa fa-check"></i>
+                    <strong>Finished!</strong> Document KYC is verified successfully for staff ID: @Model.StaffId by teller: @ViewBag.strRe on this date @Model.ModifiedDate.
+                </div>
+            }
+            else if(Model.DocumentStatus == "3")
+            {
+                <div class="alert alert-danger fade in">
+                    <button class="close" data-dismiss="alert">
+                        ×
+                    </button>
+                    <i class="fa-fw fa fa-times"></i>
+                    <strong>Error!</strong> Document was rejected by @Model.ModifiedBy on this date @Model.ModifiedDate. Need additional documents.
+                </div>
+            }
+            else if (Model.DocumentStatus == "4")
+            {
+                <div class="alert alert-danger fade in">
+                    <button class="close" data-dismiss="alert">
+                        ×
+                    </button>
+                    <i class="fa-fw fa fa-times"></i>
+                    <strong>Failed!</strong> Document was refused by @Model.ModifiedBy on this date @Model.ModifiedDate. Please inform for customer or agent @Model.StaffId
+                </div>
+            }
+        }
+
+    }
+    
+   
+   
+    <section>
+        <div class="row">
+
+            <!-- SuperBox -->
+            <div class="superbox col-sm-12">
+
+                @if (ViewBag.list != null && ViewBag.list.Count == 0)
+                {
+                    <h2>Customer @Model.Name has no image.</h2>
+                }
+                else
+                {
+                    <h2>Customer '@Model.Name' has @ViewBag.list.Count images.</h2>
+                    foreach (var item in ViewBag.list)
+                    {
+                        <div class="superbox-list">
+                            <img src="@item" data-img="@item" alt="Customer @Model.Name image uploaded by @Model.StaffId" title="This image uploaded at @Model.ModifiedDate by @Model.StaffId of @Model.Name" class="superbox-img">
+                        </div>
+                    }
+                }
+
+
+                <!--
+            -->
+
+                <div class="superbox-float"></div>
+            </div>
+            <!-- /SuperBox -->
+
+            <div class="superbox-show" style="height:300px; display: none"></div>
+
+        </div>
+    </section>
+</fieldset>
+<link href="~/Content/css/smartadmin-production-plugins.min.css" rel="stylesheet" />
+    
+        <script src="~/Content/js/app.config.js"></script>
+        <script src="~/Content/js/libs/jquery-ui-1.10.3.min.js"></script>
+        <script src="~/Content/js/plugin/datatables/jquery.dataTables.min.js"></script>
+        <script src="~/Scripts/jquery.dataTables.customize.js"></script>
+        <script src="~/Content/js/plugin/datatables/dataTables.colVis.min.js"></script>
+        <script src="~/Content/js/plugin/datatables/dataTables.tableTools.min.js"></script>
+        <script src="~/Content/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
+        <script src="~/Content/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
+        <script src="~/Content/DataTables-1.10.4/extensions/Scroller/js/dataTables.scroller.js"></script>
+        <script src="~/Content/js/smartwidgets/jarvis.widget.min.js"></script>
+        <script src="~/Scripts/woori-helper.js"></script>
+        <script src="~/Scripts/woori-constants.js"></script>
+        <script src="~/Content/fontawesome-iconpicker-master/dist/js/fontawesome-iconpicker.min.js"></script>
+        <script src="~/Content/fontawesome-iconpicker-master/src/js/iconpicker.js"></script>
+        <script src="~/Content/fontawesome-iconpicker-master/src/js/jquery.ui.pos.js"></script>
+        <script src="~/Content/js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+        <script src="~/Content/js/plugin/superbox/superbox.min.js"></script>
+        <script src="~/Content/js/plugin/bootstrap-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+
+        <style type="text/css">
+            .KYCradio{
+                position: relative;
+                display:block;
+                margin-top:10px;
+                margin-bottom:10px;
+                margin-left:42px;
+
+            }
+            .KYCLabel{
+                color:#e17d37;
+                font-size: 100%;
+            }
+        </style>
+        <script type="text/javascript">
+
+            // DO NOT REMOVE : GLOBAL FUNCTIONS!
+
+            $(document).ready(function () {
+                console.log('ready');
+                pageSetUp();
+
+                $('.superbox').SuperBox();
+
+            })
+
+        </script>

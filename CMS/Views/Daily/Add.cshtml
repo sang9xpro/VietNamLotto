@@ -1,0 +1,736 @@
+﻿@model List<BusinessDatabase.DataObj.CustomerDto>
+@{
+    ViewBag.Title = "Add";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/DatetimePicker/css/daterangepicker.css" rel="stylesheet" />
+<script src="~/Content/js/plugin/jquery-touch/jquery.ui.touch-punch.min.js"></script>
+<link href="~/Content/fontawesome-iconpicker-master/dist/css/fontawesome-iconpicker.min.css" rel="stylesheet" />
+<link href="~/Content/fontawesome-iconpicker-master/dist/css/all.css" rel="stylesheet" />
+<link href="~/Content/DataTables-1.10.4/extensions/Scroller/css/dataTables.scroller.min.css" rel="stylesheet" />
+<script src="~/Content/js/app.config.js"></script>
+<script src="~/Content/js/plugin/datatables/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/jquery.dataTables.customize.js"></script>
+<script src="~/Content/js/plugin/datatables/dataTables.colVis.min.js"></script>
+<script src="~/Content/js/plugin/datatables/dataTables.tableTools.min.js"></script>
+<script src="~/Content/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
+<script src="~/Content/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
+<script src="~/Content/DataTables-1.10.4/extensions/Scroller/js/dataTables.scroller.js"></script>
+<script src="~/Scripts/select2.min.js"></script>
+<script src="~/Content/DatetimePicker/js/moment.min.js"></script>
+<script src="~/Content/DatetimePicker/js/daterangepicker.js"></script>
+<script src="~/Content/js/smartwidgets/jarvis.widget.min.js"></script>
+<script src="~/Scripts/woori-helper.js"></script>
+<script src="~/Scripts/woori-constants.js"></script>
+<script src="~/Content/fontawesome-iconpicker-master/dist/js/fontawesome-iconpicker.min.js"></script>
+<script src="~/Content/fontawesome-iconpicker-master/src/js/iconpicker.js"></script>
+<script src="~/Content/fontawesome-iconpicker-master/src/js/jquery.ui.pos.js"></script>
+<script src="~/Content/js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+<script src="~/Content/js/plugin/fastclick/fastclick.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        pageSetUp();
+        $(document).on("focusout", "#IdNumber", function () {
+            console.log("focus out name");
+            console.log($(this).val());
+            var path = $("#UrlPath").val();
+                path += replaceVietnameseString($(this).val());
+                $("#UrlPath").val(path);
+
+
+        });
+
+        $(document).on("change", "#StaffID", function () {
+            console.log("change");
+
+            var text = $("#StaffID option:selected")["0"].innerText.split("Username:")[1];
+            console.log(text);
+
+            var path = $("#UrlPath").val();
+            if (text != null && text != "") {
+                if (path == "/Uploaded/") {
+                    path += replaceVietnameseString(text);
+                }
+                $("#UrlPath").val(path + "/");
+            }
+
+
+
+        });
+
+        $('.icp-auto').iconpicker();
+        // toggle form
+
+        $('#togglingForm').bootstrapValidator({
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            live: "enabled",
+            fields: {
+                Name: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Name is required'
+                        }
+                    }
+                },
+                IdNumber: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Identification number is required'
+                        }
+                    }
+                },
+                UrlPath: {
+                    validators: {
+                        notEmpty: {
+                            message: 'UrlPath is required'
+                        }
+                    }
+                },
+                CIF: {
+                    validators: {
+                        notEmpty: {
+                            message: 'CIF is required'
+                        }
+                    }
+                },
+                StaffID: {
+                    validators: {
+                        notEmpty: {
+                            message: 'User ID is required'
+                        }
+                    }
+                },
+            }
+        }).on("success.form.bv", function (e) {
+            // chặn submit form
+            e.preventDefault();
+            // get form instance
+            var $form = $(e.target);
+            // get bootstrap validator instance
+            var bv = $form.data('bootstrapValidator');
+            //    console.log($("#STATUS"));
+            //    console.log($("#STATUS").value);
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("Add")',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    Name: $("#Name").val(),
+                    UrlPath: $("#UrlPath").val(),
+                    CIF: $("#CIF").val(),
+                    StaffID: '@ViewBag.StaffId',
+                    PhoneNumber: $("#PhoneNumber").val(),
+                    Address: $("#Address").val(),
+                    IdNumber: $("#IdNumber").val()
+                }),
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    if (data.isSuccess == "success") {
+                        $("#resultWidget").html('   <div class="alert alert-success fade in"><button class="close" data-dismiss="alert">×</button><i class="fa-fw fa fa-check"></i>                <strong>Success!</strong> Customer has been added.</div>');
+                        setTimeout(function () { location.href = "@Url.Action("Index")"; }, 4000);
+                    } else {
+                        $("#resultWidget").html(' <div class="alert alert-danger fade in">                <button class="close" data-dismiss="alert">             ×                </button>                <i class="fa-fw fa fa-times"></i>                <strong>Error!</strong> Identification number or CIF has already existed.            </div>');
+                    }
+                }
+            });
+        });
+
+
+
+
+
+			
+    });
+</script>
+<script type="text/javascript">
+
+    // DO NOT REMOVE : GLOBAL FUNCTIONS!
+
+    $(document).ready(function () {
+
+        pageSetUp();
+
+        // menu
+        $("#menu").menu();
+
+        /*
+         * AUTO COMPLETE AJAX
+         */
+
+        function log(message) {
+            $("<div>").text(message).prependTo("#log");
+            $("#log").scrollTop(0);
+        }
+
+        $("#city").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "http://ws.geonames.org/searchJSON",
+                    dataType: "jsonp",
+                    data: {
+                        featureClass: "P",
+                        style: "full",
+                        maxRows: 12,
+                        name_startsWith: request.term
+                    },
+                    success: function (data) {
+                        response($.map(data.geonames, function (item) {
+                            return {
+                                label: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName,
+                                value: item.name
+                            }
+                        }));
+                    }
+                });
+            },
+            minLength: 2,
+            select: function (event, ui) {
+                log(ui.item ? "Selected: " + ui.item.label : "Nothing selected, input was " + this.value);
+            }
+        });
+
+        /*
+         * Spinners
+         */
+        $("#spinner").spinner();
+        $("#spinner-decimal").spinner({
+            step: 0.01,
+            numberFormat: "n"
+        });
+
+        $("#spinner-currency").spinner({
+            min: 5,
+            max: 2500,
+            step: 25,
+            start: 1000,
+            numberFormat: "C"
+        });
+
+        /*
+         * CONVERT DIALOG TITLE TO HTML
+         * REF: http://stackoverflow.com/questions/14488774/using-html-in-a-dialogs-title-in-jquery-ui-1-10
+         */
+        $.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+            _title: function (title) {
+                if (!this.options.title) {
+                    title.html("&#160;");
+                } else {
+                    title.html(this.options.title);
+                }
+            }
+        }));
+
+
+        /*
+        * DIALOG SIMPLE
+        */
+
+        // Dialog click
+        $('#dialog_link').click(function () {
+            $('#dialog_simple').dialog('open');
+            return false;
+
+        });
+
+        $('#dialog_simple').dialog({
+            autoOpen: false,
+            width: 600,
+            resizable: false,
+            modal: true,
+            title: "<div class='widget-header'><h4><i class='fa fa-warning'></i> Empty the recycle bin?</h4></div>",
+            buttons: [{
+                html: "<i class='fa fa-trash-o'></i>&nbsp; Delete all items",
+                "class": "btn btn-danger",
+                click: function () {
+                    $(this).dialog("close");
+                }
+            }, {
+                html: "<i class='fa fa-times'></i>&nbsp; Cancel",
+                "class": "btn btn-default",
+                click: function () {
+                    $(this).dialog("close");
+                }
+            }]
+        });
+
+        /*
+        * DIALOG HEADER ICON
+        */
+
+        // Modal Link
+        $('#modal_link').click(function () {
+            $('#dialog-message').dialog('open');
+            return false;
+        });
+
+        $("#dialog-message").dialog({
+            autoOpen: false,
+            modal: true,
+            title: "<div class='widget-header'><h4><i class='icon-ok'></i> jQuery UI Dialog</h4></div>",
+            buttons: [{
+                html: "Cancel",
+                "class": "btn btn-default",
+                click: function () {
+                    $(this).dialog("close");
+                }
+            }, {
+                html: "<i class='fa fa-check'></i>&nbsp; OK",
+                "class": "btn btn-primary",
+                click: function () {
+                    $(this).dialog("close");
+                }
+            }]
+
+        });
+
+        /*
+         * Remove focus from buttons
+         */
+        $('.ui-dialog :button').blur();
+
+        /*
+         * Just Tabs
+         */
+
+        $('#tabs').tabs();
+
+        /*
+         *  Simple tabs adding and removing
+         */
+
+        $('#tabs2').tabs();
+
+        // Dynamic tabs
+        var tabTitle = $("#tab_title"), tabContent = $("#de_content"), tabTemplate = "<li style='position:relative;'> <span class='air air-top-left delete-tab' style='top:7px; left:7px;'><button class='btn btn-xs font-xs btn-default hover-transparent'><i class='fa fa-times'></i></button></span></span><a href='#{href}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #{label}</a></li>", tabCounter = 2;
+
+        var tabs = $("#tabs2").tabs();
+
+        // modal dialog init: custom buttons and a "close" callback reseting the form inside
+        var dialog = $("#addtab").dialog({
+            autoOpen: false,
+            width: 600,
+            resizable: false,
+            modal: true,
+            buttons: [{
+                html: "<i class='fa fa-times'></i>&nbsp; Hủy bỏ",
+                "class": "btn btn-default",
+                click: function () {
+                    $(this).dialog("close");
+
+                }
+            }, {
+
+                html: "<i class='fa fa-plus'></i>&nbsp; Thêm",
+                "class": "btn btn-danger",
+                click: function () {
+                    addTab();
+                    $(this).dialog("close");
+                }
+            }]
+        });
+
+
+        var dialogTichKe = $("#addtabTichKe").dialog({
+            autoOpen: false,
+            width: 800,
+            resizable: false,
+            modal: true,
+            buttons: [{
+                html: "<i class='fa fa-times'></i>&nbsp; Hủy bỏ",
+                "class": "btn btn-default",
+                click: function () {
+                    $(this).dialog("close");
+
+                }
+            }, {
+
+                html: "<i class='fa fa-plus'></i>&nbsp; Thêm",
+                "class": "btn btn-danger",
+                click: function () {
+                    addTab();
+                    $(this).dialog("close");
+                }
+            }]
+        });
+        // addTab form: calls addTab function on submit and closes the dialog
+        var form = dialog.find("form").submit(function (event) {
+            addTab();
+            dialog.dialog("close");
+            event.preventDefault();
+        });
+
+        // actual addTab function: adds new tab using the input from the form above
+        function addTab() {
+            var label = tabTitle.val() || "Tab " + tabCounter, id = "tabs-" + tabCounter, li = $(tabTemplate.replace(/#\{href\}/g, "#" + id).replace(/#\{label\}/g, label)), tabContentHtml = tabContent.val() || "Tab " + tabCounter + " content.";
+            console.log("LABEL");
+            console.log(label);
+            tabs.find(".ui-tabs-nav").append(li);
+            tabs.append("<div id='" + id + "'><p>" + tabContentHtml + "</p></div>");
+            tabs.tabs("refresh");
+            tabCounter++;
+
+            // clear fields
+            $("#tab_title").val("");
+            $("#de_content").val("");
+        }
+
+        // addTab button: just opens the dialog
+        $("#add_tab").button().click(function () {
+            dialog.dialog("open");
+        });
+        $(document).on("click", "button[id^='btnAdd-']", function () {
+            console.log("click button Add");
+            console.log(this);
+            dialogTichKe.dialog("open");
+        })
+        // close icon: removing the tab on click
+        $("#tabs2").on("click", 'span.delete-tab', function () {
+
+            var panelId = $(this).closest("li").remove().attr("aria-controls");
+            $("#" + panelId).remove();
+            tabs.tabs("refresh");
+        });
+
+        /*
+        * ACCORDION
+        */
+        //jquery accordion
+
+        var accordionIcons = {
+            header: "fa fa-plus",    // custom icon class
+            activeHeader: "fa fa-minus" // custom icon class
+        };
+
+        $("#accordion").accordion({
+            autoHeight: false,
+            heightStyle: "content",
+            collapsible: true,
+            animate: 300,
+            icons: accordionIcons,
+            header: "h4",
+        })
+
+        /*
+         * PROGRESS BAR
+         */
+        $("#progressbar").progressbar({
+            value: 25,
+            create: function (event, ui) {
+                $(this).removeClass("ui-corner-all").addClass('progress').find(">:first-child").removeClass("ui-corner-left").addClass('progress-bar progress-bar-success');
+            }
+        });
+
+    })
+
+</script>
+<div id="widget-grid" class="">
+    <div class="row">
+        <!-- NEW WIDGET START -->
+        <article class="col-sm-12" id="resultWidget"></article>
+        <!-- WIDGET END -->
+        <!-- NEW COL START -->
+        <article class="col-sm-12 col-md-12 col-lg-12">
+
+            <!-- Widget ID (each widget will need unique ID)-->
+            <div class="jarviswidget" id="wid-id-1" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-custombutton="false">
+                <!-- widget options:
+                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+
+                data-widget-colorbutton="false"
+                data-widget-editbutton="false"
+                data-widget-togglebutton="false"
+                data-widget-deletebutton="false"
+                data-widget-fullscreenbutton="false"
+                data-widget-custombutton="false"
+                data-widget-collapsed="true"
+                data-widget-sortable="false"
+
+                -->
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                    <h2>Insert Form </h2>
+
+                </header>
+
+                <!-- widget div-->
+                <div>
+
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
+
+                    </div>
+                    <!-- end widget edit box -->
+                    <!-- widget content -->
+                    <div class="widget-body no-padding">
+
+                        @*<form id="togglingForm" class="smart-form" method="post">
+                                <header>
+                                    Create new customer
+                                </header>
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label class="label control-label">Name *</label>
+                                        <label class="input">
+                                            <input type="text" id="Name" name="Name" class="input-sm form-control">
+                                        </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="label">Select User In Charge *</label>
+                                        <label class="textarea textarea-resizable">
+                                            <select style="width:100%" class="select2" data-select-search="true" id="StaffID">
+                                                <option value="0">-- Select person in charge --</option>
+                                                @{
+                                                    foreach (var item in Model)
+                                                    {
+                                                        var strNameUser = "";
+                                                        var strConcat = "";
+                                                        if (item.Name != null)
+                                                        {
+                                                            strNameUser +="Fullname:"+ item.Name;
+                                                            strConcat = " - ";
+                                                        }
+                                                        if (item.Username != null)
+                                                        {
+
+                                                            strNameUser += strConcat +"Username:"+ item.Username;
+                                                        }
+
+                                                        <option value="@item.ID">@strNameUser</option>
+                                                    }
+
+                                                }
+                                            </select>
+                                        </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="label control-label">Identification Number </label>
+                                        <label class="input">
+                                            <input type="text" id="IdNumber" name="IdNumber" class="input-sm form-control">
+                                        </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="label control-label">Url Path *</label>
+                                        <label class="input">
+                                            <input type="text" id="UrlPath" name="UrlPath" class="input-sm form-control" value="/Uploaded/@ViewBag.StaffId/">
+                                        </label>
+                                    </div>
+                                </fieldset>
+
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label class="label">CIF *</label>
+                                        <label class="input">
+                                            <input type="text" id="CIF" name="CIF" class="input-sm form-control" maxlength="9" >
+                                        </label>
+                                    </div>
+
+                                </fieldset>
+
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label class="label">Phone Number *</label>
+                                        <label class="input">
+                                            <input type="text" id="PhoneNumber" name="PhoneNumber" class="input-sm form-control">
+
+                                        </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="label control-label">Address </label>
+                                        <label class="input">
+                                            <input type="text" id="Address" name="Address" class="input-sm form-control">
+                                        </label>
+                                    </div>
+                                </fieldset>
+                                <footer>
+                                    <button type="submit" id="btnSubmit" class="btn btn-primary">
+                                        Submit
+                                    </button>
+                                    <button type="button" class="btn btn-default" onclick="window.history.back();">
+                                        Back
+                                    </button>
+                                </footer>
+                            </form>*@
+
+
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <h3 style="padding:10px">Ngày: @DateTime.Now.ToShortDateString()</h3>
+                                <p style="padding:10px">
+                                    <button type="button" id="add_tab" class="btn btn-primary" >
+                                        Tạo thêm bảng
+                                    </button>
+                                 
+                                </p>
+
+                                <div id="tabs2">
+                                    <ul>
+                                        <li>
+                                            <a href="#tabs-1">Bảng Nhà</a>
+                                        </li>
+                                    </ul>
+                                    <div id="tabs-1">
+                
+                                    </div>
+
+                                <div class="form-group col-sm-12 col-md-12 col-lg-12" style="padding:10px" id="listFunction-1">
+                                    <button type="button" id="btnAdd-1" class="btn btn-labeled btn-success" data-id="1">
+                                        <span class="btn-label">
+                                            <i class="glyphicon glyphicon-info-sign"></i>
+                                        </span> Thêm tích kê mới
+                                    </button>
+                                    <button type="button" id="btnThongKeBang-1" data-id="1" data-customer-id="4" class="btn btn-labeled bg-color-blueLight txt-color-white">
+                                        <span class="btn-label">
+                                            <i class="glyphicon glyphicon-list-alt"></i>
+                                        </span>  Xem thống kê của bảng
+                                    </button>
+                                    <button type="button" id="btnThongKeTatCa" class="btn btn-labeled .bg-color-orange .txt-color-white">
+                                        <span class="btn-label">
+                                            <i class="glyphicon glyphicon-align-justify"></i>
+                                        </span> Xem thống kê toàn bộ các bảng
+                                    </button>
+                                </div>
+                                    <div class="form-group col-sm-9 col-md-9 col-lg-9" id="de-1">
+
+                                        <label>Đề</label>
+                                        <textarea class="form-control" name="de_content" id="de_content" placeholder="Ví dụ:
+01-02-03x50
+đầu 1-2-3x 100
+kép x 40
+030-070-121x50" rows="30"></textarea>
+                                    </div>
+                                    <div class="form-group col-sm-3 col-md-3 col-lg-3" id="lo-1">
+                                        <label>Lô</label>
+                                        <textarea class="form-control" name="lo_content" id="lo_content" placeholder="Ví dụ:
+ 01-02-03x50
+010-06-03x 100
+kép x 40
+030-070-121x50" rows="30"></textarea>
+                                    </div>
+                                    <div class="form-group col-sm-6 col-md-6 col-lg-6" id="xien-1">
+                                        <label>Xiên</label>
+                                        <textarea class="form-control" name="xien_content" id="xien_content" placeholder="Ví dụ:
+01-02-03x50 (có nghĩa là xiên 3)
+131x 100 (có nghĩa là xiên 2: 13-31 x 100)
+151-171 x 40 (có nghĩa là xiên 4: 15-51-17-71x40)
+03-04-05-06x100 (có nghĩa là xiên 4: 03-04-05-06x100)" rows="5"></textarea>
+                                    </div>
+                                    <div class="form-group col-sm-6 col-md-6 col-lg-6" id="xienquay-1">
+                                        <label>Xiên Quây</label>
+                                        <textarea class="form-control" name="xienquay_content" id="xienquay_content" placeholder="Ví dụ:
+01-02-03x50 (có nghĩa là xiên quây 3)
+151-171 x 40 (có nghĩa là xiên quây 4: 15-51-17-71x40)
+03-04-05-06x100 (có nghĩa là xiên quây 4: 03-04-05-06x100)" rows="5"></textarea>
+                                    </div>
+                                </div>
+                              
+                                <!-- Demo -->
+                                <div id="addtab" title="<div class='widget-header'><h4><i class='fa fa-plus'></i> Tạo thêm bảng</h4></div>">
+                                    <form>
+                                        <fieldset>
+                                            <input name="authenticity_token" type="hidden">
+                                            <div class="form-group">
+                                                <label>Tên người chuyển</label>
+                                                <input class="form-control" id="tab_title" value="" placeholder="Nhập tên người chuyển vào đây" type="text">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Đề</label>
+                                                <textarea class="form-control" name="de_content" id="de_content" placeholder="Ví dụ:
+01-02-03x50
+đầu 1-2-3x 100
+kép x 40
+030-070-121x50" rows="5"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Lô</label>
+                                                <textarea class="form-control" name="lo_content" id="lo_content" placeholder="Nên nhập lô theo ví dụ sau:
+ 01-02-03x50
+010-06-03x 100
+kép x 40
+030-070-121x50" rows="5"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Xiên</label>
+                                                <textarea class="form-control" name="xien_content" id="xien_content" placeholder="Nên nhập xiên theo ví dụ sau:
+01-02-03x50 (có nghĩa là xiên 3)
+131x 100 (có nghĩa là xiên 2: 13-31 x 100)
+151-171 x 40 (có nghĩa là xiên 4: 15-51-17-71x40)
+03-04-05-06x100 (có nghĩa là xiên 4: 03-04-05-06x100)" rows="5"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Xiên Quây</label>
+                                                <textarea class="form-control" name="xienquay_content" id="xienquay_content" placeholder="Nên nhập xiên quây theo ví dụ sau:
+01-02-03x50 (có nghĩa là xiên quây 3)
+151-171 x 40 (có nghĩa là xiên quây 4: 15-51-17-71x40)
+03-04-05-06x100 (có nghĩa là xiên quây 4: 03-04-05-06x100)" rows="5"></textarea>
+                                            </div>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                                
+                                <!-- hiennd-->
+                                <div id="addtabTichKe" title="<div class='widget-header'><h4><i class='fa fa-plus'></i> Tạo thêm bảng</h4></div>">
+                                    <form>
+                                        <fieldset>
+                                            <input name="authenticity_token" type="hidden">
+                                            <div class="form-group">
+                                                <label>Tên tiêu đề</label>
+                                                <input class="form-control" id="tab_title_tichke" value="" placeholder="Bạn có thể nhập tên người đánh vào đây" type="text">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Đề</label>
+                                                <textarea class="form-control" name="de_content_tichke" id="de_content_tichke" placeholder="Ví dụ:
+01-02-03x50
+đầu 1-2-3x 100
+kép x 40
+030-070-121x50" rows="5"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Lô</label>
+                                                <textarea class="form-control" name="lo_content_tichke" id="lo_content_tichke" placeholder="Ví dụ:
+ 01-02-03x50
+010-06-03x 100
+kép x 40
+030-070-121x50" rows="5"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Xiên</label>
+                                                <textarea class="form-control" name="xien_content_tichke" id="xien_content_tichke" placeholder="Ví dụ:
+01-02-03x50 (có nghĩa là xiên 3)
+131x 100 (có nghĩa là xiên 2: 13-31 x 100)
+151-171 x 40 (có nghĩa là xiên 4: 15-51-17-71x40)
+03-04-05-06x100 (có nghĩa là xiên 4: 03-04-05-06x100)" rows="5"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Xiên Quây</label>
+                                                <textarea class="form-control" name="xienquay_content_tichke" id="xienquay_content_tichke" placeholder="Ví dụ:
+01-02-03x50 (có nghĩa là xiên quây 3)
+151-171 x 40 (có nghĩa là xiên quây 4: 15-51-17-71x40)
+03-04-05-06x100 (có nghĩa là xiên quây 4: 03-04-05-06x100)" rows="5"></textarea>
+                                            </div>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                              
+                            </div>
+                         </div>
+                     </div>
+                    <!-- end widget content -->
+                </div>
+                <!-- end widget div -->
+            </div>
+            <!-- end widget -->
+        </article>
+        <!-- END COL -->
+    </div>
+</div>

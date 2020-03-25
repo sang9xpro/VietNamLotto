@@ -176,9 +176,9 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BasicController.cs" />
+    <Compile Include="Controllers\DailyController.cs" />
     <Compile Include="Controllers\FunctionController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
-    <Compile Include="Controllers\SchedulerController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\GroupController.cs" />
     <Compile Include="Controllers\GroupToFunctionController.cs" />
@@ -1515,6 +1515,10 @@
     <Content Include="Views\Customer\Add.cshtml" />
     <Content Include="Views\Shared\_Info.cshtml" />
     <Content Include="Views\Scheduler\IndexScheduler.cshtml" />
+    <Content Include="Views\Daily\Add.cshtml" />
+    <Content Include="Views\Daily\Edit.cshtml" />
+    <Content Include="Views\Daily\ImageView.cshtml" />
+    <Content Include="Views\Daily\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

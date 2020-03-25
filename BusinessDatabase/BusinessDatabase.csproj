@@ -49,15 +49,14 @@
     <Compile Include="Base\RequestBase.cs" />
     <Compile Include="Base\ResponseBase.cs" />
     <Compile Include="Base\ResponseDefault.cs" />
-    <Compile Include="BussinessObj\CustomerHelperBo.cs" />
     <Compile Include="BussinessObj\HelperBo.cs" />
     <Compile Include="BussinessObj\StaffHelperBo.cs" />
     <Compile Include="CommonObj\EventViewModel.cs" />
     <Compile Include="CommonObj\FileAndMimeType.cs" />
     <Compile Include="CommonObj\JQueryDataTableModel.cs" />
     <Compile Include="CommonObj\ProcedureParams.cs" />
-    <Compile Include="DataObj\DocumentStatusLogDto.cs" />
-    <Compile Include="DataObj\RecruiterDto.cs" />
+    <Compile Include="DataObj\ContractDto.cs" />
+    <Compile Include="DataObj\ProductDto.cs" />
     <Compile Include="DataObj\SchedulerDto.cs" />
     <Compile Include="DataObj\GroupDto.cs" />
     <Compile Include="DataObj\FunctionDto.cs" />
